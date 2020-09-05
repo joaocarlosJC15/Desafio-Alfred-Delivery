@@ -105,4 +105,14 @@ describe('DbAddAccount Usecase', () => {
 
     expect(createUserSpy).toHaveBeenCalledWith(makeFakeCreateUser())
   })
+
+  test('CreateUserUseCase deve retornar uma excecao caso CreateUserRepository.create gere uma excecao', async () => {
+    const { sut, createUserRepositoryStub } = makeSut()
+
+    jest.spyOn(createUserRepositoryStub, 'create').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+
+    const error = sut.create(makeFakeCreateUser())
+
+    await expect(error).rejects.toEqual(new Error())
+  })
 })
