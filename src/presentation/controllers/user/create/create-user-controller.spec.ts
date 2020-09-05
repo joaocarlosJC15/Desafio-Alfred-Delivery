@@ -131,7 +131,7 @@ describe('CreateUserController', () => {
     expect(httpResponse).toEqual(serverError(new Error()))
   })
 
-  test('CreateUserController deve retornar 200 se reateUserController.createUser.create for bem sucedido', async () => {
+  test('CreateUserController deve retornar 200 se createUserController.createUser.create for bem sucedido', async () => {
     const { sut } = makeSut()
 
     const httpResponse = await sut.handle(makeFakeRequest())

@@ -12,16 +12,17 @@ export class CreateUserUsecase implements CreateUser {
     private readonly getUserByEmailRepository: GetUserByEmailRepository
   ) {}
 
-  async create (user: CreateUserModel): Promise<UserModel> {
-    const userByEmail = await this.getUserByEmailRepository.getByEmail(user.email)
+  async create (userCreate: CreateUserModel): Promise<UserModel> {
+    const userByEmail = await this.getUserByEmailRepository.getByEmail(userCreate.email)
     if (userByEmail) {
       throw new ParamInUseError('email')
     }
 
-    await this.hashGenerate.generate(user.password)
+    const hash = await this.hashGenerate.generate(userCreate.password)
+    userCreate.password = hash
 
-    await this.createUserRepository.create(user)
+    const user = await this.createUserRepository.create(userCreate)
 
-    return null
+    return user
   }
 }
