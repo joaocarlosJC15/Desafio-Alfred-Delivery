@@ -22,7 +22,7 @@ const makeFakeUser = (): UserModel => ({
   name: 'name',
   email: 'email@mail.com',
   birthDate: makeFakeDate,
-  password: 'password'
+  password: hashPassword
 })
 
 const makeFakeCreateUser = (): CreateUserModel => ({
@@ -104,7 +104,12 @@ describe('DbAddAccount Usecase', () => {
 
     await sut.create(makeFakeCreateUser())
 
-    expect(createUserSpy).toHaveBeenCalledWith(makeFakeCreateUser())
+    expect(createUserSpy).toHaveBeenCalledWith({
+      name: makeFakeCreateUser().name,
+      email: makeFakeCreateUser().email,
+      birthDate: makeFakeCreateUser().birthDate,
+      password: hashPassword
+    })
   })
 
   test('CreateUserUseCase deve retornar uma excecao caso CreateUserRepository.create gere uma excecao', async () => {
@@ -145,5 +150,13 @@ describe('DbAddAccount Usecase', () => {
     const error = sut.create(makeFakeCreateUser())
 
     await expect(error).rejects.toEqual(new ParamInUseError('email'))
+  })
+
+  test('CreateUserUseCase deve retornar um usuario caso CreateUserRepository.create for nem sucedido', async () => {
+    const { sut } = makeSut()
+
+    const user = await sut.create(makeFakeCreateUser())
+
+    expect(user).toEqual(makeFakeUser())
   })
 })
