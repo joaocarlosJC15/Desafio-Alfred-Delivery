@@ -1,21 +1,32 @@
-import { Controller, HttpRequest, HttpResponse } from '@/presentation/protocols'
+import { Controller, HttpRequest, HttpResponse, Validation } from '@/presentation/protocols'
 import { CreateUser } from '@/domain/usecases/user/create-user'
+import { convertErrorToHttpResponse } from '@/presentation/http/responses'
 
 export class CreateUserControler implements Controller {
   constructor (
-    private readonly createUser: CreateUser
+    private readonly createUser: CreateUser,
+    private readonly validation: Validation
   ) {}
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-    const { name, email, birthDate, password } = httpRequest.body
+    try {
+      const validateError = this.validation.validate(httpRequest.body)
+      if (validateError) {
+        throw validateError
+      }
 
-    await this.createUser.create({
-      name,
-      email,
-      birthDate,
-      password
-    })
+      const { name, email, birthDate, password } = httpRequest.body
 
-    return await new Promise(resolve => resolve(null))
+      await this.createUser.create({
+        name,
+        email,
+        birthDate,
+        password
+      })
+
+      return await new Promise(resolve => resolve(null))
+    } catch (error) {
+      return convertErrorToHttpResponse(error)
+    }
   }
 }
