@@ -64,6 +64,16 @@ const makeSut = (): SutTypes => {
 }
 
 describe('CreateUserController', () => {
+  test('CreateUserController.validation.validate deve ser chamado com os valores corretos', async () => {
+    const { sut, validationStub } = makeSut()
+
+    const validateSpy = jest.spyOn(validationStub, 'validate')
+
+    await sut.handle(makeFakeRequest())
+
+    expect(validateSpy).toHaveBeenCalledWith(makeFakeRequest().body)
+  })
+
   test('CreateUserController deve retornar 400 se alguma validação retornar o erro "MissingParamError"', async () => {
     const { sut, validationStub } = makeSut()
 
