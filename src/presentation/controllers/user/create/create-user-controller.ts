@@ -1,5 +1,5 @@
 import { Controller, HttpRequest, HttpResponse, Validation } from '@/presentation/protocols'
-import { CreateUser } from '@/domain/usecases/user/create-user'
+import { CreateUser } from '@/domain/usecases/user/create/create-user'
 import { convertErrorToHttpResponse, ok } from '@/presentation/http/responses'
 
 export class CreateUserControler implements Controller {

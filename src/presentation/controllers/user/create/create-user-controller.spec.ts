@@ -1,9 +1,9 @@
 import { HttpRequest, Validation } from '@/presentation/protocols'
 import { CreateUserControler } from './create-user-controller'
-import { CreateUser, CreateUserModel } from '@/domain/usecases/user/create-user'
-import { UserModel } from '@/domain/models/user'
+import { CreateUser, CreateUserModel } from '@/domain/usecases/user/create/create-user'
 import { MissingParamError, InvalidParamError } from '@/errors'
 import { badRequest, serverError, ok } from '@/presentation/http/responses'
+import { UserModel } from '@/domain/models/user'
 
 interface SutTypes {
   sut: CreateUserControler
@@ -34,7 +34,7 @@ const makeFakeUser = (): UserModel => ({
 const makeCreateUser = (): CreateUser => {
   class CreateUserStub implements CreateUser {
     async create (user: CreateUserModel): Promise<UserModel> {
-      return await new Promise(resolve => resolve(makeFakeUser()))
+      return new Promise(resolve => resolve(makeFakeUser()))
     }
   }
 
