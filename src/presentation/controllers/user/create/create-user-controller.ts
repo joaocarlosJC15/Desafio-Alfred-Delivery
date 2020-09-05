@@ -1,6 +1,6 @@
 import { Controller, HttpRequest, HttpResponse, Validation } from '@/presentation/protocols'
 import { CreateUser } from '@/domain/usecases/user/create-user'
-import { convertErrorToHttpResponse } from '@/presentation/http/responses'
+import { convertErrorToHttpResponse, ok } from '@/presentation/http/responses'
 
 export class CreateUserControler implements Controller {
   constructor (
@@ -17,14 +17,14 @@ export class CreateUserControler implements Controller {
 
       const { name, email, birthDate, password } = httpRequest.body
 
-      await this.createUser.create({
+      const user = await this.createUser.create({
         name,
         email,
         birthDate,
         password
       })
 
-      return await new Promise(resolve => resolve(null))
+      return ok(user)
     } catch (error) {
       return convertErrorToHttpResponse(error)
     }
