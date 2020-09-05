@@ -5,6 +5,7 @@ import { HashGenerate } from '@/domain/protocols/criptography/hash/hash-generate
 import { UserModel } from '@/domain/models/user'
 import { CreateUserModel } from './create-user'
 import { GetUserByEmailRepository } from '@/domain/protocols/db/user/get-user-by-email-repository'
+import { ParamInUseError } from '@/errors'
 
 interface SutTypes {
   sut: CreateUserUsecase
@@ -54,7 +55,7 @@ const makeCreateUserRepository = (): CreateUserRepository => {
 const makeGetUserByEmailRepository = (): GetUserByEmailRepository => {
   class GetUserByEmailRepositoryStub implements GetUserByEmailRepository {
     async getByEmail (email: string): Promise<UserModel> {
-      return new Promise(resolve => resolve(makeFakeUser()))
+      return new Promise(resolve => resolve(null))
     }
   }
 
@@ -134,5 +135,15 @@ describe('DbAddAccount Usecase', () => {
     const error = sut.create(makeFakeCreateUser())
 
     await expect(error).rejects.toEqual(new Error())
+  })
+
+  test('CreateUserUseCase deve retornar um erro do tipo "ParamInUseError" caso GetUserByEmailRepository.getByEmail retorne um usuario', async () => {
+    const { sut, getUserByEmailRepositoryStub } = makeSut()
+
+    jest.spyOn(getUserByEmailRepositoryStub, 'getByEmail').mockReturnValueOnce(new Promise(resolve => resolve(makeFakeUser())))
+
+    const error = sut.create(makeFakeCreateUser())
+
+    await expect(error).rejects.toEqual(new ParamInUseError('email'))
   })
 })
