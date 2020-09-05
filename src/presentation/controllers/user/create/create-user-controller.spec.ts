@@ -3,7 +3,7 @@ import { CreateUserControler } from './create-user-controller'
 import { CreateUser, CreateUserModel } from '@/domain/usecases/user/create-user'
 import { UserModel } from '@/domain/models/user'
 import { MissingParamError, InvalidParamError } from '@/errors'
-import { badRequest, serverError } from '@/presentation/http/responses'
+import { badRequest, serverError, ok } from '@/presentation/http/responses'
 
 interface SutTypes {
   sut: CreateUserControler
@@ -129,5 +129,13 @@ describe('CreateUserController', () => {
     const httpResponse = await sut.handle(makeFakeRequest())
 
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('CreateUserController deve retornar 200 se reateUserController.createUser.create for bem sucedido', async () => {
+    const { sut } = makeSut()
+
+    const httpResponse = await sut.handle(makeFakeRequest())
+
+    expect(httpResponse).toEqual(ok(makeFakeUser()))
   })
 })
