@@ -95,4 +95,14 @@ describe('DbAddAccount Usecase', () => {
 
     await expect(error).rejects.toEqual(new Error())
   })
+
+  test('CreateUserUseCase.createUserRepository.create deve ser chamado com os valores corretos', async () => {
+    const { sut, createUserRepositoryStub } = makeSut()
+
+    const createUserSpy = jest.spyOn(createUserRepositoryStub, 'create')
+
+    await sut.create(makeFakeCreateUser())
+
+    expect(createUserSpy).toHaveBeenCalledWith(makeFakeCreateUser())
+  })
 })
