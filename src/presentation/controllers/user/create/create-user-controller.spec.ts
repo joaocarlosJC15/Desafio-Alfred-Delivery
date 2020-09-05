@@ -1,8 +1,8 @@
 import { HttpRequest, Validation } from '@/presentation/protocols'
 import { CreateUserControler } from './create-user-controller'
 import { CreateUser, CreateUserModel } from '@/domain/usecases/user/create/create-user'
-import { MissingParamError, InvalidParamError } from '@/errors'
-import { badRequest, serverError, ok } from '@/presentation/http/responses'
+import { MissingParamError, InvalidParamError, ParamInUseError } from '@/errors'
+import { badRequest, serverError, ok, conflict } from '@/presentation/http/responses'
 import { UserModel } from '@/domain/models/user'
 
 interface SutTypes {
@@ -129,6 +129,18 @@ describe('CreateUserController', () => {
     const httpResponse = await sut.handle(makeFakeRequest())
 
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('CreateUserController deve retornar 409 se CreateUserController.createUser.create retornar o erro "ParamInUseError"', async () => {
+    const { sut, createUserStub } = makeSut()
+
+    jest.spyOn(createUserStub, 'create').mockReturnValueOnce(
+      new Promise((resolve, reject) => reject(new ParamInUseError('email')))
+    )
+
+    const httpResponse = await sut.handle(makeFakeRequest())
+
+    expect(httpResponse).toEqual(conflict(new ParamInUseError('email')))
   })
 
   test('CreateUserController deve retornar 200 se createUserController.createUser.create for bem sucedido', async () => {
