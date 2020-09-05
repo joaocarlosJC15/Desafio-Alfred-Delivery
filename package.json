@@ -1,0 +1,19 @@
+{
+  "name": "desafio-alfred-delivery",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joaocarlosJC15/Desafio-Alfred-Delivery.git"
+  },
+  "author": "Joao Carlos Alvim da Cunha",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joaocarlosJC15/Desafio-Alfred-Delivery/issues"
+  },
+  "homepage": "https://github.com/joaocarlosJC15/Desafio-Alfred-Delivery#readme"
+}
