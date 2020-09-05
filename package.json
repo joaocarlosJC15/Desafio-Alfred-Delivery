@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": ""
+    "test": "jest --silent --noStackTrace --runInBand",
+    "test:verbose": "jest --runInBand",
+    "test:unit": "npm test -- --watch -c jest-unit-config.js",
+    "test:integration": "npm test -- --watch -c jest-integration-config.js",
+    "test:staged": "npm test -- --findRelatedTests",
+    "test:ci": "npm test -- --coverage"
   },
   "repository": {
     "type": "git",
@@ -17,6 +22,7 @@
   },
   "homepage": "https://github.com/joaocarlosJC15/Desafio-Alfred-Delivery#readme",
   "devDependencies": {
+    "@types/jest": "^26.0.13",
     "@types/node": "^14.6.4",
     "@typescript-eslint/eslint-plugin": "^3.10.1",
     "eslint": "^7.8.1",
@@ -27,7 +33,9 @@
     "eslint-plugin-standard": "^4.0.1",
     "git-commit-msg-linter": "^2.6.0",
     "husky": "^4.2.5",
+    "jest": "^26.4.2",
     "lint-staged": "^10.3.0",
+    "ts-jest": "^26.3.0",
     "typescript": "^4.0.2"
   }
 }
