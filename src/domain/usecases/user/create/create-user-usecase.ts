@@ -14,6 +14,8 @@ export class CreateUserUsecase implements CreateUser {
   async create (user: CreateUserModel): Promise<UserModel> {
     await this.hashGenerate.generate(user.password)
 
+    await this.createUserRepository.create(user)
+
     return null
   }
 }
