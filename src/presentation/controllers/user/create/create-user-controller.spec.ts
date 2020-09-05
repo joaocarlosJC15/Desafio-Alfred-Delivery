@@ -3,7 +3,7 @@ import { CreateUserControler } from './create-user-controller'
 import { CreateUser, CreateUserModel } from '@/domain/usecases/user/create-user'
 import { UserModel } from '@/domain/models/user'
 import { MissingParamError, InvalidParamError } from '@/errors'
-import { badRequest } from '@/presentation/http/responses'
+import { badRequest, serverError } from '@/presentation/http/responses'
 
 interface SutTypes {
   sut: CreateUserControler
@@ -117,5 +117,17 @@ describe('CreateUserController', () => {
       birthDate: makeFakeRequest().body.birthDate,
       password: makeFakeRequest().body.password
     })
+  })
+
+  test('CreateUserController deve retornar 500 se CreateUserController.createUser.create lançar uma exceção', async () => {
+    const { sut, createUserStub } = makeSut()
+
+    jest.spyOn(createUserStub, 'create').mockReturnValueOnce(
+      new Promise((resolve, reject) => reject(new Error()))
+    )
+
+    const httpResponse = await sut.handle(makeFakeRequest())
+
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
