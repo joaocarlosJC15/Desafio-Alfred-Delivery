@@ -115,4 +115,14 @@ describe('DbAddAccount Usecase', () => {
 
     await expect(error).rejects.toEqual(new Error())
   })
+
+  test('CreateUserUseCase.getUserByEmailRepository.getByEmail deve ser chamado com o campo email', async () => {
+    const { sut, getUserByEmailRepositoryStub } = makeSut()
+
+    const getUserSpy = jest.spyOn(getUserByEmailRepositoryStub, 'getByEmail')
+
+    await sut.create(makeFakeCreateUser())
+
+    expect(getUserSpy).toHaveBeenCalledWith(makeFakeCreateUser().email)
+  })
 })
