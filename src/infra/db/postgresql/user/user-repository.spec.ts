@@ -2,6 +2,7 @@
 import { UserRepository } from './user-repository'
 import connection from '../config/connection'
 import { CreateUserModel } from '@/domain/usecases/user/create/create-user'
+import { UserModel } from '@/domain/models/user'
 
 const tableName = 'users'
 const fakeDate = new Date(1998, 2, 11)
@@ -13,7 +14,7 @@ const makeFakeCreateUser = (): CreateUserModel => ({
   password: 'password'
 })
 
-describe('Account Mongo Repository', () => {
+describe('UserRepository', () => {
   beforeAll(async () => {
     await connection.migrate.latest()
   })
@@ -150,6 +151,31 @@ describe('Account Mongo Repository', () => {
       const error = sut.getAll()
 
       await expect(error).rejects.toThrow()
+    })
+  })
+
+  describe('edit()', () => {
+    test('UserRepository.getAll deve retornar um usuario se a acao for bem sucedida', async () => {
+      const sut = makeSut()
+
+      const data = await connection(tableName).insert(makeFakeCreateUser())
+
+      const editUser: UserModel = {
+        id: data[0],
+        name: 'name_edit',
+        email: makeFakeCreateUser().email,
+        birthDate: makeFakeCreateUser().birthDate,
+        password: makeFakeCreateUser().password
+      }
+
+      const user = await sut.edit(editUser)
+
+      expect(user).toBeTruthy()
+      expect(user.id).toBeTruthy()
+      expect(user.name).toBe('name_edit')
+      expect(user.email).toBe(makeFakeCreateUser().email)
+      expect(user.birthDate).toBeTruthy()
+      expect(user.password).toBe(makeFakeCreateUser().password)
     })
   })
 })
