@@ -155,7 +155,7 @@ describe('UserRepository', () => {
   })
 
   describe('edit()', () => {
-    test('UserRepository.getAll deve retornar um usuario se a acao for bem sucedida', async () => {
+    test('UserRepository.edit deve retornar um usuario se a acao for bem sucedida', async () => {
       const sut = makeSut()
 
       const data = await connection(tableName).insert(makeFakeCreateUser())
@@ -176,6 +176,26 @@ describe('UserRepository', () => {
       expect(user.email).toBe(makeFakeCreateUser().email)
       expect(user.birthDate).toBeTruthy()
       expect(user.password).toBe(makeFakeCreateUser().password)
+    })
+
+    test('UserRepository.edit deve retornar uma excecao caso uma excecao seja gerada', async () => {
+      const sut = makeSut()
+
+      const editUser: UserModel = {
+        id: 0,
+        name: 'name_edit',
+        email: makeFakeCreateUser().email,
+        birthDate: makeFakeCreateUser().birthDate,
+        password: makeFakeCreateUser().password
+      }
+
+      jest.spyOn(sut, 'edit').mockImplementationOnce(async () => {
+        return new Promise((resolve, reject) => reject(new Error()))
+      })
+
+      const error = sut.edit(editUser)
+
+      await expect(error).rejects.toThrow()
     })
   })
 })
