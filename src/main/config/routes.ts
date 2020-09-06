@@ -11,7 +11,6 @@ export default (app: Express): void => {
       try {
         (await import(`../routes/${file}`)).default(router)
       } catch (error) {
-
       }
     }
   })
