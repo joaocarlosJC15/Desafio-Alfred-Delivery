@@ -139,5 +139,17 @@ describe('Account Mongo Repository', () => {
       expect(users[1].birthDate).toBeTruthy()
       expect(users[1].password).toBe(makeFakeCreateUser().password)
     })
+
+    test('UserRepository.getAll deve retornar uma excecao caso uma excecao seja gerada', async () => {
+      const sut = makeSut()
+
+      jest.spyOn(sut, 'getAll').mockImplementationOnce(async () => {
+        return new Promise((resolve, reject) => reject(new Error()))
+      })
+
+      const error = sut.getAll()
+
+      await expect(error).rejects.toThrow()
+    })
   })
 })
