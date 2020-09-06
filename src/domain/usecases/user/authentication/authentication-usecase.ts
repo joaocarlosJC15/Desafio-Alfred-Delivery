@@ -3,7 +3,7 @@ import { GetUserByEmailRepository } from '@/domain/protocols/db/user/get-user-by
 import { HashComparer } from '@/domain/protocols/criptography/hash/hash-comparer'
 import { Encrypter } from '@/domain/protocols/criptography/jwt/encrypter'
 import { UpdateJwtTokenRepository } from '@/domain/protocols/db/user/update-jwt-token-repository'
-import { NotFoundError } from '@/errors'
+import { NotFoundError, InternalServerError } from '@/errors'
 import { UnauthorizedError } from '@/errors/unauthorized-error'
 
 export class AuthenticationUseCase implements Authentication {
@@ -26,6 +26,9 @@ export class AuthenticationUseCase implements Authentication {
     }
 
     const token = await this.encrypter.encrypt(user.id)
+    if (!token) {
+      throw new InternalServerError()
+    }
     await this.updateJwtTokenRepository.updateJwtToken(user.id, token)
 
     return token
