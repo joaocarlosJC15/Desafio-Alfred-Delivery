@@ -114,4 +114,30 @@ describe('Account Mongo Repository', () => {
       await expect(error).rejects.toThrow()
     })
   })
+
+  describe('getAll()', () => {
+    test('UserRepository.getAll deve retornar array de usuarios se a acao for bem sucedida', async () => {
+      const sut = makeSut()
+
+      await connection(tableName).insert(makeFakeCreateUser())
+      await connection(tableName).insert(makeFakeCreateUser())
+
+      const users = await sut.getAll()
+
+      expect(users).toBeTruthy()
+      expect(users.length).toBe(2)
+
+      expect(users[0].id).toBeTruthy()
+      expect(users[0].name).toBe(makeFakeCreateUser().name)
+      expect(users[0].email).toBe(makeFakeCreateUser().email)
+      expect(users[0].birthDate).toBeTruthy()
+      expect(users[0].password).toBe(makeFakeCreateUser().password)
+
+      expect(users[1].id).toBeTruthy()
+      expect(users[1].name).toBe(makeFakeCreateUser().name)
+      expect(users[1].email).toBe(makeFakeCreateUser().email)
+      expect(users[1].birthDate).toBeTruthy()
+      expect(users[1].password).toBe(makeFakeCreateUser().password)
+    })
+  })
 })
