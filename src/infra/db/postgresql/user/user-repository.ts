@@ -14,10 +14,12 @@ export class UserRepository implements CreateUserRepository, GetUserByEmailRepos
   tableName = 'users'
 
   async create (userCreate: CreateUserModel): Promise<UserModel> {
-    const data = await connection(this.tableName).insert(userCreate)
+    const data = await connection(this.tableName).insert(userCreate).returning('*')
 
-    if (data) {
-      const userData = await connection.select().from(this.tableName).where('users.id', data[0])
+    if (data && data.length) {
+      const id = Number(data[0]) ? data[0] : data[0].id
+
+      const userData = await connection.select().from(this.tableName).where('users.id', id)
 
       if (userData) {
         return serializeToUser(userData[0])
@@ -30,7 +32,7 @@ export class UserRepository implements CreateUserRepository, GetUserByEmailRepos
   async getByEmail (email: string): Promise<UserModel> {
     const data = await connection.select().from(this.tableName).where('users.email', email)
 
-    if (data) {
+    if (data && data.length) {
       return serializeToUser(data[0])
     }
 
@@ -40,7 +42,7 @@ export class UserRepository implements CreateUserRepository, GetUserByEmailRepos
   async getById (id: number): Promise<UserModel> {
     const data = await connection.select().from(this.tableName).where('users.id', id)
 
-    if (data) {
+    if (data && data.length) {
       return serializeToUser(data[0])
     }
 
@@ -50,7 +52,7 @@ export class UserRepository implements CreateUserRepository, GetUserByEmailRepos
   async getAll (): Promise<UserModel []> {
     const data = await connection.select().from(this.tableName)
 
-    if (data) {
+    if (data && data.length) {
       const users: UserModel[] = []
 
       for (const element of data) {
@@ -93,7 +95,7 @@ export class UserRepository implements CreateUserRepository, GetUserByEmailRepos
   async getByToken (token: string): Promise<UserModel> {
     const data = await connection.select().from(this.tableName).where('users.token', token)
 
-    if (data) {
+    if (data && data.length) {
       return serializeToUser(data[0])
     }
 
