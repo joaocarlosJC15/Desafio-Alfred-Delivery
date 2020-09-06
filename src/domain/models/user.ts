@@ -3,5 +3,5 @@ export interface UserModel {
   name: string
   email: string
   birthDate: Date
-  password?: string
+  password: string
 }
