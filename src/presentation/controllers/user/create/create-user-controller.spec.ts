@@ -109,16 +109,6 @@ describe('CreateUserController', () => {
     expect(httpResponse).toEqual(badRequest(new InvalidParamError('field')))
   })
 
-  test('CreateUserController deve retornar 400 se alguma validação retornar o erro "InvalidParamError"', async () => {
-    const { sut, validationStub } = makeSut()
-
-    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new InvalidParamError('field'))
-
-    const httpResponse = await sut.handle(makeFakeRequest())
-
-    expect(httpResponse).toEqual(badRequest(new InvalidParamError('field')))
-  })
-
   test('CreateUserController.createUser.create deve ser chamado com os valores corretos', async () => {
     const { sut, createUserStub } = makeSut()
 
