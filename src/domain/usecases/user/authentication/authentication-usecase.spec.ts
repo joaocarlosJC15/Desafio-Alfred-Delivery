@@ -133,7 +133,7 @@ describe('DbAutentication UseCase', () => {
 
     await sut.auth(makeFakeAuthentication())
 
-    expect(compareSpy).toHaveBeenCalledWith(makeFakeAuthentication().email, makeFakeUser().password)
+    expect(compareSpy).toHaveBeenCalledWith(makeFakeAuthentication().password, makeFakeUser().password)
   })
 
   test('AuthenticationUseCase deve retornar uma excecao se hashComparer.compare gerar uma excecao', async () => {

@@ -20,7 +20,7 @@ export class AuthenticationUseCase implements Authentication {
       throw new NotFoundError('Usuário não encontrado. Email ou senha inválidos')
     }
 
-    const isValid = await this.hashComparer.compare(authentication.email, user.password)
+    const isValid = await this.hashComparer.compare(authentication.password, user.password)
     if (!isValid) {
       throw new UnauthorizedError()
     }
