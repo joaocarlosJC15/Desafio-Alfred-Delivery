@@ -221,13 +221,11 @@ describe('UserRepository', () => {
     test('UserRepository.updateJwtToken deve retornar uma excecao caso uma excecao seja gerada', async () => {
       const sut = makeSut()
 
-      const data = await connection(tableName).insert(makeFakeCreateUser())
-
       jest.spyOn(sut, 'updateJwtToken').mockImplementationOnce(async () => {
         return new Promise((resolve, reject) => reject(new Error()))
       })
 
-      const error = sut.updateJwtToken(data[0], token)
+      const error = sut.updateJwtToken(0, token)
 
       await expect(error).rejects.toThrow()
     })
@@ -250,5 +248,17 @@ describe('UserRepository', () => {
       expect(user.birthDate).toBeTruthy()
       expect(user.password).toBe(makeFakeCreateUser().password)
     })
+  })
+
+  test('UserRepository.getByToken deve retornar uma excecao caso uma excecao seja gerada', async () => {
+    const sut = makeSut()
+
+    jest.spyOn(sut, 'getByToken').mockImplementationOnce(async () => {
+      return new Promise((resolve, reject) => reject(new Error()))
+    })
+
+    const error = sut.getByToken(token)
+
+    await expect(error).rejects.toThrow()
   })
 })
