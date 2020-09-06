@@ -6,6 +6,7 @@ import { UserModel } from '@/domain/models/user'
 
 const tableName = 'users'
 const fakeDate = new Date(1998, 2, 11)
+const token = 'any_token'
 
 const makeFakeCreateUser = (): CreateUserModel => ({
   name: 'name',
@@ -196,6 +197,25 @@ describe('UserRepository', () => {
       const error = sut.edit(editUser)
 
       await expect(error).rejects.toThrow()
+    })
+  })
+
+  describe('updateJwtToken()', () => {
+    test('UserRepository.updateJwtToken armazenar no banco o token correto do usuario', async () => {
+      const sut = makeSut()
+
+      const data = await connection(tableName).insert(makeFakeCreateUser())
+
+      await sut.updateJwtToken(data[0], token)
+
+      const user = await connection.select().from(tableName).where('users.token', token)
+
+      expect(user).toBeTruthy()
+      expect(user[0].id).toBeTruthy()
+      expect(user[0].name).toBe(makeFakeCreateUser().name)
+      expect(user[0].email).toBe(makeFakeCreateUser().email)
+      expect(user[0].birthDate).toBeTruthy()
+      expect(user[0].password).toBe(makeFakeCreateUser().password)
     })
   })
 })
