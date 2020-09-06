@@ -57,7 +57,7 @@ describe('Account Mongo Repository', () => {
     })
   })
 
-  describe('create()', () => {
+  describe('getByEmail()', () => {
     test('UserRepository.getByEmail deve retornar um usuario se a acao for bem sucedida', async () => {
       const sut = makeSut()
 
@@ -83,6 +83,23 @@ describe('Account Mongo Repository', () => {
       const error = sut.getByEmail(makeFakeCreateUser().email)
 
       await expect(error).rejects.toThrow()
+    })
+  })
+
+  describe('getById()', () => {
+    test('UserRepository.getById deve retornar um usuario se a acao for bem sucedida', async () => {
+      const sut = makeSut()
+
+      const data = await connection(tableName).insert(makeFakeCreateUser())
+
+      const user = await sut.getById(data[0])
+
+      expect(user).toBeTruthy()
+      expect(user.id).toBeTruthy()
+      expect(user.name).toBe(makeFakeCreateUser().name)
+      expect(user.email).toBe(makeFakeCreateUser().email)
+      expect(user.birthDate).toBeTruthy()
+      expect(user.password).toBe(makeFakeCreateUser().password)
     })
   })
 })
