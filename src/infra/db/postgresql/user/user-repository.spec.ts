@@ -43,17 +43,34 @@ describe('Account Mongo Repository', () => {
       expect(user.birthDate).toBeTruthy()
       expect(user.password).toBe(makeFakeCreateUser().password)
     })
+
+    test('UserRepository.create deve retornar uma excecao caso uma excecao seja gerada', async () => {
+      const sut = makeSut()
+
+      jest.spyOn(sut, 'create').mockImplementationOnce(async () => {
+        return new Promise((resolve, reject) => reject(new Error()))
+      })
+
+      const error = sut.create(makeFakeCreateUser())
+
+      await expect(error).rejects.toThrow()
+    })
   })
 
-  test('UserRepository.create deve retornar uma excecao caso uma excecao seja gerada', async () => {
-    const sut = makeSut()
+  describe('create()', () => {
+    test('UserRepository.getByEmail deve retornar um usuario se a acao for bem sucedida', async () => {
+      const sut = makeSut()
 
-    jest.spyOn(sut, 'create').mockImplementationOnce(async () => {
-      return new Promise((resolve, reject) => reject(new Error()))
+      await connection(tableName).insert(makeFakeCreateUser())
+
+      const user = await sut.getByEmail(makeFakeCreateUser().email)
+
+      expect(user).toBeTruthy()
+      expect(user.id).toBeTruthy()
+      expect(user.name).toBe(makeFakeCreateUser().name)
+      expect(user.email).toBe(makeFakeCreateUser().email)
+      expect(user.birthDate).toBeTruthy()
+      expect(user.password).toBe(makeFakeCreateUser().password)
     })
-
-    const error = sut.create(makeFakeCreateUser())
-
-    await expect(error).rejects.toThrow()
   })
 })
