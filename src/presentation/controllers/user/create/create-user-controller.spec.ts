@@ -4,7 +4,7 @@ import { CreateUser, CreateUserModel } from '@/domain/usecases/user/create/proto
 import { MissingParamError, InvalidParamError, ParamInUseError } from '@/errors'
 import { badRequest, serverError, ok, conflict } from '@/presentation/http/responses'
 import { UserModel } from '@/domain/models/user'
-import { Authentication, AuthenticationModel } from '@/domain/usecases/user/authentication/authentication-user'
+import { Authentication, AuthenticationModel } from '@/domain/usecases/user/authentication/protocols/authentication-user'
 
 interface SutTypes {
   sut: CreateUserControler
