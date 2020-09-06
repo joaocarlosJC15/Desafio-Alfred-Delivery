@@ -5,8 +5,9 @@ import connection from '../config/connection'
 import { serializeToUser } from './user-serialize'
 import { GetUserByEmailRepository } from '@/domain/protocols/db/user/get-user-by-email-repository'
 import { GetUserByIdRepository } from '@/domain/protocols/db/user/get-user-by-id-repository'
+import { GetUsersRepository } from '@/domain/protocols/db/user/get-users-repository'
 
-export class UserRepository implements CreateUserRepository, GetUserByEmailRepository, GetUserByIdRepository {
+export class UserRepository implements CreateUserRepository, GetUserByEmailRepository, GetUserByIdRepository, GetUsersRepository {
   tableName = 'users'
 
   async create (userCreate: CreateUserModel): Promise<UserModel> {
@@ -41,5 +42,19 @@ export class UserRepository implements CreateUserRepository, GetUserByEmailRepos
     }
 
     return null
+  }
+
+  async getAll (): Promise<UserModel []> {
+    const data = await connection.select().from(this.tableName)
+
+    if (data) {
+      const users: UserModel[] = []
+
+      for (const element of data) {
+        users.push(serializeToUser(element))
+      }
+
+      return users
+    }
   }
 }
