@@ -7,10 +7,10 @@ import { GetUserByEmailRepository } from '@/domain/protocols/db/user/get-user-by
 import { GetUserByIdRepository } from '@/domain/protocols/db/user/get-user-by-id-repository'
 import { GetUsersRepository } from '@/domain/protocols/db/user/get-users-repository'
 import { EditUserRepository } from '@/domain/protocols/db/user/edit-user-repository'
-import { UpdateAccessTokenRepository } from '@/domain/protocols/db/user/update-jwt-token-repository'
+import { UpdateJwtTokenRepository } from '@/domain/protocols/db/user/update-jwt-token-repository'
 import { GetUserByTokenRepository } from '@/domain/protocols/db/user/get-user-by-token-repository'
 
-export class UserRepository implements CreateUserRepository, GetUserByEmailRepository, GetUserByIdRepository, GetUsersRepository, EditUserRepository, UpdateAccessTokenRepository, GetUserByTokenRepository {
+export class UserRepository implements CreateUserRepository, GetUserByEmailRepository, GetUserByIdRepository, GetUsersRepository, EditUserRepository, UpdateJwtTokenRepository, GetUserByTokenRepository {
   tableName = 'users'
 
   async create (userCreate: CreateUserModel): Promise<UserModel> {

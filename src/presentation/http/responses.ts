@@ -1,8 +1,24 @@
 import { HttpResponse } from '@/presentation/protocols'
-import { InternalServerError, InvalidParamError, MissingParamError, ParamInUseError } from '@/errors'
+import { InternalServerError, InvalidParamError, MissingParamError, ParamInUseError, NotFoundError } from '@/errors'
+import { UnauthorizedError } from '@/errors/unauthorized-error'
+
+export const ok = (data: any): HttpResponse => ({
+  statusCode: 200,
+  body: data
+})
 
 export const badRequest = (error: Error): HttpResponse => ({
   statusCode: 400,
+  body: error
+})
+
+export const unauthorized = (error: Error): HttpResponse => ({
+  statusCode: 401,
+  body: error
+})
+
+export const notFound = (error: Error): HttpResponse => ({
+  statusCode: 404,
   body: error
 })
 
@@ -16,18 +32,17 @@ export const serverError = (error: Error): HttpResponse => ({
   body: new InternalServerError(error.stack)
 })
 
-export const ok = (data: any): HttpResponse => ({
-  statusCode: 200,
-  body: data
-})
-
 export const convertErrorToHttpResponse = (error: Error): HttpResponse => {
   if (error instanceof InvalidParamError) {
     return badRequest(error)
   } else if (error instanceof MissingParamError) {
     return badRequest(error)
-  } if (error instanceof ParamInUseError) {
+  } else if (error instanceof ParamInUseError) {
     return conflict(error)
+  } else if (error instanceof NotFoundError) {
+    return notFound(error)
+  } else if (error instanceof UnauthorizedError) {
+    return unauthorized(error)
   } else {
     return serverError(error)
   }

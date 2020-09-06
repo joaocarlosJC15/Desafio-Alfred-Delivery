@@ -77,7 +77,7 @@ const makeSut = (): SutTypes => {
 }
 
 describe('DbAddAccount Usecase', () => {
-  test('CreareUserUsecase.hashGenerate.generate deve ser chamado com o campo password', async () => {
+  test('CreateUserUsecase.hashGenerate.generate deve ser chamado com o campo password', async () => {
     const { sut, hashGenerateStub } = makeSut()
 
     const hashSpy = jest.spyOn(hashGenerateStub, 'generate')
@@ -152,7 +152,7 @@ describe('DbAddAccount Usecase', () => {
     await expect(error).rejects.toEqual(new ParamInUseError('email'))
   })
 
-  test('CreateUserUseCase deve retornar um usuario caso CreateUserRepository.create for nem sucedido', async () => {
+  test('CreateUserUseCase deve retornar um usuario caso CreateUserRepository.create for bem sucedido', async () => {
     const { sut } = makeSut()
 
     const user = await sut.create(makeFakeCreateUser())
