@@ -7,3 +7,7 @@ export const databaseSQLInfo = {
 }
 
 export const applicationPort = 3333
+
+export const salt = 12
+
+export const jwtSecret = 'sgjwprytgn-cnwposms'
