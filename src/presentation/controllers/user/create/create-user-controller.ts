@@ -19,19 +19,19 @@ export class CreateUserControler implements Controller {
 
       const { name, email, birthDate, password } = httpRequest.body
 
-      const user = await this.createUser.create({
+      await this.createUser.create({
         name,
         email,
         birthDate,
         password
       })
 
-      await this.authentication.auth({
+      const jwtToken = await this.authentication.auth({
         email,
         password
       })
 
-      return ok(user)
+      return ok({ jwtToken })
     } catch (error) {
       return convertErrorToHttpResponse(error)
     }

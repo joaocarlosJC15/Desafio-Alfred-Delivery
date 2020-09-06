@@ -158,14 +158,6 @@ describe('CreateUserController', () => {
     expect(httpResponse).toEqual(conflict(new ParamInUseError('email')))
   })
 
-  test('CreateUserController deve retornar 200 se createUserController.createUser.create for bem sucedido', async () => {
-    const { sut } = makeSut()
-
-    const httpResponse = await sut.handle(makeFakeRequest())
-
-    expect(httpResponse).toEqual(ok(makeFakeUser()))
-  })
-
   test('CreateUserController.authentication.auth deve ser chamado com os valores corretos', async () => {
     const { sut, authenticationStub } = makeSut()
 
@@ -189,5 +181,13 @@ describe('CreateUserController', () => {
     const httpResponse = await sut.handle(makeFakeRequest())
 
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('CreateUserController deve retornar 200 se createUserController.createUser.create for bem sucedido', async () => {
+    const { sut } = makeSut()
+
+    const httpResponse = await sut.handle(makeFakeRequest())
+
+    expect(httpResponse).toEqual(ok({ jwtToken: token }))
   })
 })
