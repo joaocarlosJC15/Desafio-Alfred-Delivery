@@ -2,7 +2,8 @@
 
 Route: /users
 Type: POST
-BodyType: Json
+BodyType: JSON
+ResponseType: JSON
 Fields: {
   name,
   email,
