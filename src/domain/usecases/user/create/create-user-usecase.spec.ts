@@ -3,7 +3,7 @@ import { CreateUserRepository } from '@/domain/protocols/db/user/create-user-rep
 import { CreateUserUsecase } from './create-user-usecase'
 import { HashGenerate } from '@/domain/protocols/criptography/hash/hash-generate'
 import { UserModel } from '@/domain/models/user'
-import { CreateUserModel } from './create-user'
+import { CreateUserModel } from './protocols/create-user'
 import { GetUserByEmailRepository } from '@/domain/protocols/db/user/get-user-by-email-repository'
 import { ParamInUseError } from '@/errors'
 

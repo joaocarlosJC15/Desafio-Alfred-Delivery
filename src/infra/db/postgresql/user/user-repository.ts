@@ -1,6 +1,6 @@
 import { CreateUserRepository } from '@/domain/protocols/db/user/create-user-repository'
 import { UserModel } from '@/domain/models/user'
-import { CreateUserModel } from '@/domain/usecases/user/create/create-user'
+import { CreateUserModel } from '@/domain/usecases/user/create/protocols/create-user'
 import connection from '../config/connection'
 import { serializeToUser } from './user-serialize'
 import { GetUserByEmailRepository } from '@/domain/protocols/db/user/get-user-by-email-repository'

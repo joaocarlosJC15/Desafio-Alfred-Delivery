@@ -1,7 +1,7 @@
 
 import { UserRepository } from './user-repository'
 import connection from '../config/connection'
-import { CreateUserModel } from '@/domain/usecases/user/create/create-user'
+import { CreateUserModel } from '@/domain/usecases/user/create/protocols/create-user'
 import { UserModel } from '@/domain/models/user'
 
 const tableName = 'users'

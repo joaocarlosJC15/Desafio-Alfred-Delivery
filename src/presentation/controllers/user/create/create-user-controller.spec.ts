@@ -1,6 +1,6 @@
 import { HttpRequest, Validation } from '@/presentation/protocols'
 import { CreateUserControler } from './create-user-controller'
-import { CreateUser, CreateUserModel } from '@/domain/usecases/user/create/create-user'
+import { CreateUser, CreateUserModel } from '@/domain/usecases/user/create/protocols/create-user'
 import { MissingParamError, InvalidParamError, ParamInUseError } from '@/errors'
 import { badRequest, serverError, ok, conflict } from '@/presentation/http/responses'
 import { UserModel } from '@/domain/models/user'

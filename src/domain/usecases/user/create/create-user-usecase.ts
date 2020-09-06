@@ -1,4 +1,4 @@
-import { CreateUser, CreateUserModel } from './create-user'
+import { CreateUser, CreateUserModel } from './protocols/create-user'
 import { UserModel } from '@/domain/models/user'
 import { CreateUserRepository } from '@/domain/protocols/db/user/create-user-repository'
 import { HashGenerate } from '@/domain/protocols/criptography/hash/hash-generate'

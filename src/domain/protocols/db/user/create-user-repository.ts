@@ -1,4 +1,4 @@
-import { CreateUserModel } from '@/domain/usecases/user/create/create-user'
+import { CreateUserModel } from '@/domain/usecases/user/create/protocols/create-user'
 import { UserModel } from '@/domain/models/user'
 
 export interface CreateUserRepository {
