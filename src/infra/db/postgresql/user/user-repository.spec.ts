@@ -44,4 +44,16 @@ describe('Account Mongo Repository', () => {
       expect(user.password).toBe(makeFakeCreateUser().password)
     })
   })
+
+  test('UserRepository.create deve retornar uma excecao caso uma excecao seja gerada', async () => {
+    const sut = makeSut()
+
+    jest.spyOn(sut, 'create').mockImplementationOnce(async () => {
+      return new Promise((resolve, reject) => reject(new Error()))
+    })
+
+    const error = sut.create(makeFakeCreateUser())
+
+    await expect(error).rejects.toThrow()
+  })
 })
