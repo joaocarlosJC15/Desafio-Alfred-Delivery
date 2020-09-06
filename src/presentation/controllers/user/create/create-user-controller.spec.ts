@@ -4,11 +4,13 @@ import { CreateUser, CreateUserModel } from '@/domain/usecases/user/create/creat
 import { MissingParamError, InvalidParamError, ParamInUseError } from '@/errors'
 import { badRequest, serverError, ok, conflict } from '@/presentation/http/responses'
 import { UserModel } from '@/domain/models/user'
+import { Authentication, AuthenticationModel } from '@/domain/usecases/user/authentication/authentication-user'
 
 interface SutTypes {
   sut: CreateUserControler
   createUserStub: CreateUser
   validationStub: Validation
+  authenticationStub: Authentication
 }
 
 const makeFakeDate = new Date()
@@ -51,15 +53,27 @@ const makeValidation = (): Validation => {
   return new ValidationStub()
 }
 
+const makeAuthentication = (): Authentication => {
+  class AuthenticationStub implements Authentication {
+    async auth (authentication: AuthenticationModel): Promise<string> {
+      return await new Promise(resolve => resolve('any_token'))
+    }
+  }
+
+  return new AuthenticationStub()
+}
+
 const makeSut = (): SutTypes => {
   const createUserStub = makeCreateUser()
   const validationStub = makeValidation()
-  const sut = new CreateUserControler(createUserStub, validationStub)
+  const authenticationStub = makeAuthentication()
+  const sut = new CreateUserControler(createUserStub, validationStub, authenticationStub)
 
   return {
     sut,
     createUserStub,
-    validationStub
+    validationStub,
+    authenticationStub
   }
 }
 
@@ -149,5 +163,18 @@ describe('CreateUserController', () => {
     const httpResponse = await sut.handle(makeFakeRequest())
 
     expect(httpResponse).toEqual(ok(makeFakeUser()))
+  })
+
+  test('CreateUserController.authentication.auth deve ser chamado com os valores corretos', async () => {
+    const { sut, authenticationStub } = makeSut()
+
+    const authSpy = jest.spyOn(authenticationStub, 'auth')
+
+    await sut.handle(makeFakeRequest())
+
+    expect(authSpy).toHaveBeenCalledWith({
+      email: makeFakeRequest().body.email,
+      password: makeFakeRequest().body.password
+    })
   })
 })
