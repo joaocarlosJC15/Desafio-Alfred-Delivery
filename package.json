@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/main/server.js",
     "build": "rimraf dist && tsc -p tsconfig-build.json",
-    "debug": "nodemon -L --watch ./dist --inspect=0.0.0:9222 --nolazy dist/main/server.js",
+    "debug": "nodemon -L --watch ./dist --inspect=0.0.0:9223 --nolazy dist/main/server.js",
     "test": "jest --silent --noStackTrace --runInBand",
     "test:verbose": "jest --runInBand",
     "test:unit": "npm test -- --watch -c jest-unit-config.js",
@@ -56,5 +56,11 @@
     "knex": "^0.21.5",
     "nodemon": "^2.0.4",
     "pg": "^8.3.3"
+  },
+  "engines": {
+    "node": "13.x"
+  },
+  "_moduleAliases": {
+    "@": "dist"
   }
 }
