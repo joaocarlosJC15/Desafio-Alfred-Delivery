@@ -8,8 +8,9 @@ import { GetUserByIdRepository } from '@/domain/protocols/db/user/get-user-by-id
 import { GetUsersRepository } from '@/domain/protocols/db/user/get-users-repository'
 import { EditUserRepository } from '@/domain/protocols/db/user/edit-user-repository'
 import { UpdateAccessTokenRepository } from '@/domain/protocols/db/user/update-jwt-token-repository'
+import { GetUserByTokenRepository } from '@/domain/protocols/db/user/get-user-by-token-repository'
 
-export class UserRepository implements CreateUserRepository, GetUserByEmailRepository, GetUserByIdRepository, GetUsersRepository, EditUserRepository, UpdateAccessTokenRepository {
+export class UserRepository implements CreateUserRepository, GetUserByEmailRepository, GetUserByIdRepository, GetUsersRepository, EditUserRepository, UpdateAccessTokenRepository, GetUserByTokenRepository {
   tableName = 'users'
 
   async create (userCreate: CreateUserModel): Promise<UserModel> {
@@ -87,5 +88,15 @@ export class UserRepository implements CreateUserRepository, GetUserByEmailRepos
     }
 
     await connection(this.tableName).update(editUser).where('users.id', id)
+  }
+
+  async getByToken (token: string): Promise<UserModel> {
+    const data = await connection.select().from(this.tableName).where('users.token', token)
+
+    if (data) {
+      return serializeToUser(data[0])
+    }
+
+    return null
   }
 }
