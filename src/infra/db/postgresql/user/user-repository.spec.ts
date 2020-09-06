@@ -232,4 +232,23 @@ describe('UserRepository', () => {
       await expect(error).rejects.toThrow()
     })
   })
+
+  describe('getByToken()', () => {
+    test('UserRepository.getByToken deve retornar um usuario se a acao for bem sucedida', async () => {
+      const sut = makeSut()
+
+      const data = await connection(tableName).insert(makeFakeCreateUser())
+
+      await sut.updateJwtToken(data[0], token)
+
+      const user = await sut.getByToken(token)
+
+      expect(user).toBeTruthy()
+      expect(user.id).toBeTruthy()
+      expect(user.name).toBe(makeFakeCreateUser().name)
+      expect(user.email).toBe(makeFakeCreateUser().email)
+      expect(user.birthDate).toBeTruthy()
+      expect(user.password).toBe(makeFakeCreateUser().password)
+    })
+  })
 })
