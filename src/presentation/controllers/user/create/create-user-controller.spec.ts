@@ -14,6 +14,7 @@ interface SutTypes {
 }
 
 const makeFakeDate = new Date()
+const token = 'any_token'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
@@ -56,7 +57,7 @@ const makeValidation = (): Validation => {
 const makeAuthentication = (): Authentication => {
   class AuthenticationStub implements Authentication {
     async auth (authentication: AuthenticationModel): Promise<string> {
-      return await new Promise(resolve => resolve('any_token'))
+      return await new Promise(resolve => resolve(token))
     }
   }
 
@@ -176,5 +177,17 @@ describe('CreateUserController', () => {
       email: makeFakeRequest().body.email,
       password: makeFakeRequest().body.password
     })
+  })
+
+  test('CreateUserController deve retornar 500 se authentication.auth lançar uma excecao', async () => {
+    const { sut, authenticationStub } = makeSut()
+
+    jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(
+      new Promise((resolve, reject) => reject(new Error()))
+    )
+
+    const httpResponse = await sut.handle(makeFakeRequest())
+
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
