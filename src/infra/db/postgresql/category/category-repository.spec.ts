@@ -126,4 +126,42 @@ describe('CategoryRepository', () => {
       expect(category).toBeNull()
     })
   })
+
+  describe('getAllUser()', () => {
+    test('CategoryRepository.getAllUser deve retornar todas as categorias de um usuario se a acao for bem sucedida', async () => {
+      const sut = makeSut()
+
+      let user = await connection('users').insert(makeFakeCreateUser())
+      let user_id = user[0]
+
+      const fakeCategory = Object.assign({}, makeFakeCreateCategory())
+      fakeCategory.user_id = user_id
+
+      await connection(tableName).insert(fakeCategory)
+
+      user = await connection('users').insert(makeFakeCreateUser())
+      user_id = user[0]
+      fakeCategory.user_id = user_id
+
+      await connection(tableName).insert(fakeCategory)
+      await connection(tableName).insert(fakeCategory)
+
+      const categories = await sut.getAllByUser(user_id)
+
+      expect(categories).toBeTruthy()
+      expect(categories.length).toBe(2)
+    })
+
+    test('CategoryRepository.getAllByUser deve retornar uma excecao caso uma excecao seja gerada', async () => {
+      const sut = makeSut()
+
+      jest.spyOn(sut, 'getAllByUser').mockImplementationOnce(async () => {
+        return new Promise((resolve, reject) => reject(new Error()))
+      })
+
+      const error = sut.getAllByUser(0)
+
+      await expect(error).rejects.toThrow()
+    })
+  })
 })
