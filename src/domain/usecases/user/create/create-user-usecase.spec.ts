@@ -76,7 +76,7 @@ const makeSut = (): SutTypes => {
   }
 }
 
-describe('DbAddAccount Usecase', () => {
+describe('CreateUserUsecase', () => {
   test('CreateUserUsecase.hashGenerate.generate deve ser chamado com o campo password', async () => {
     const { sut, hashGenerateStub } = makeSut()
 
