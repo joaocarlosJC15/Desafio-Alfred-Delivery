@@ -70,4 +70,60 @@ describe('CategoryRepository', () => {
       await expect(error).rejects.toThrow()
     })
   })
+
+  describe('getByUser()', () => {
+    test('CategoryRepository.getByUser deve retornar uma categoria se a acao for bem sucedida', async () => {
+      const sut = makeSut()
+
+      const user = await connection('users').insert(makeFakeCreateUser())
+      const user_id = user[0]
+
+      const fakeCategory = Object.assign({}, makeFakeCreateCategory())
+      fakeCategory.user_id = user_id
+
+      const categoryrResponse = await connection(tableName).insert(fakeCategory)
+      const category_id = categoryrResponse[0]
+
+      const category = await sut.getByUser(category_id, user_id)
+
+      expect(category).toBeTruthy()
+      expect(category.id).toBeTruthy()
+      expect(category.name).toBe(makeFakeCreateCategory().name)
+      expect(category.description).toBe(makeFakeCreateCategory().description)
+      expect(category.disabled).toBeFalsy()
+      expect(category.user_id).toBe(user_id)
+    })
+
+    test('CategoryRepository.getByUser deve retornar uma excecao caso uma excecao seja gerada', async () => {
+      const sut = makeSut()
+
+      jest.spyOn(sut, 'getByUser').mockImplementationOnce(async () => {
+        return new Promise((resolve, reject) => reject(new Error()))
+      })
+
+      const error = sut.getByUser(0, 0)
+
+      await expect(error).rejects.toThrow()
+    })
+
+    test('CategoryRepository.getByUser deve retorna null ao buscar uma categoria não pertencente ao usuario', async () => {
+      const sut = makeSut()
+
+      let user = await connection('users').insert(makeFakeCreateUser())
+      let user_id = user[0]
+
+      const fakeCategory = Object.assign({}, makeFakeCreateCategory())
+      fakeCategory.user_id = user_id
+
+      const categoryrResponse = await connection(tableName).insert(fakeCategory)
+      const category_id = categoryrResponse[0]
+
+      user = await connection('users').insert(makeFakeCreateUser())
+      user_id = user[0]
+
+      const category = await sut.getByUser(category_id, user_id)
+
+      expect(category).toBeNull()
+    })
+  })
 })
