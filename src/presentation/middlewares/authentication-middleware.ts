@@ -15,7 +15,7 @@ export class AuthenticationMiddleware implements Middleware {
       if (accessToken) {
         const user = await this.getUserByToken.getByToken(accessToken)
 
-        return ok({ userId: user.id })
+        return ok({ user_id: user.id })
       }
 
       throw new UnauthorizedError()

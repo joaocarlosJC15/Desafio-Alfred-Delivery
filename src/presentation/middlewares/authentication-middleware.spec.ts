@@ -94,6 +94,6 @@ describe('AuthenticationMiddleware', () => {
 
     const httpResponse = await sut.handle(makeFakeRequest())
 
-    expect(httpResponse).toEqual(ok({ userId: makeFakeUser().id }))
+    expect(httpResponse).toEqual(ok({ user_id: makeFakeUser().id }))
   })
 })
