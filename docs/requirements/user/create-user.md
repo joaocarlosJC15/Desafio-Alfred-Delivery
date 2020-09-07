@@ -21,7 +21,7 @@ Fields: {
   - Gera um hash para o **password** fornecido.
   - Cria um usuário com os dados informados, com o valor do campo **password** sendo substituído pela hash gerada.
   - Gera um **token** de acesso a partir do ID do usuário criado.
-  - Armazena o ID e o token do usuário em uma base Redis. 
+  - Atualiza o registro do usuário criado com o token gerado.
   - Retorna status **200** com o token de acesso do usuário.
 
 ## Exceptions
@@ -32,4 +32,4 @@ Fields: {
   - Retorna status **500** se ocorrer algum erro interno ao criar a conta do usuário.
   - Retorna erro **500** se ocorrer algum erro interno ao gerar o hash do **password**.
   - Retorna erro **500** se ocorrer algum erro interno ao gerar o token de acesso.
-  - Retorna erro **500** se ocorrer algum erro interno ao salvar o ID e o token do usuário em uma base Rédis.
+  - Retorna erro **500** se ocorrer algum erro interno ao atualizar o registro do usuario criado para armazenar o token gerado.
