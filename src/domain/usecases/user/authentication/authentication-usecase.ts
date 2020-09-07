@@ -17,7 +17,7 @@ export class AuthenticationUseCase implements Authentication {
   async auth (authentication: AuthenticationModel): Promise<string> {
     const user = await this.getUserByEmailRepository.getByEmail(authentication.email)
     if (!user) {
-      throw new NotFoundError('Usuário não encontrado. Email ou senha inválidos')
+      throw new NotFoundError('Usuário não encontrado.')
     }
 
     const isValid = await this.hashComparer.compare(authentication.password, user.password)
