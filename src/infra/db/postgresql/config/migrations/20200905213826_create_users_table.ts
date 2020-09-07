@@ -1,6 +1,6 @@
 import Knex from 'knex'
 
-export async function up (knex: Knex): Promise<any> {
+export async function up (knex: Knex): Promise<void> {
   return knex.schema.createTable('users', (table: Knex.TableBuilder) => {
     table.increments('id').primary()
     table.string('name', 200).notNullable()
@@ -11,6 +11,6 @@ export async function up (knex: Knex): Promise<any> {
   })
 }
 
-exports.down = function (knex: Knex) {
-  return knex.schema.dropTable('users')
+export async function down (knex: Knex): Promise<void> {
+  return knex.raw('DROP TABLE users CASCADE')
 }
