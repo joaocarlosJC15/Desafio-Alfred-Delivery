@@ -123,7 +123,7 @@ describe('DbAutentication UseCase', () => {
 
     const error = sut.auth(makeFakeAuthentication())
 
-    await expect(error).rejects.toEqual(new NotFoundError('Usuário não encontrado. Email ou senha inválidos'))
+    await expect(error).rejects.toEqual(new NotFoundError('Usuário não encontrado.'))
   })
 
   test('AuthenticationUseCase.hashComparer.compare deve ser chamado com os valores corretos', async () => {
