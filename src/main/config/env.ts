@@ -1,7 +1,7 @@
 export const databaseSQLInfo = {
   host: '127.0.0.1',
   user: 'postgres',
-  port: 5433,
+  port: 5432,
   password: 'postgres',
   database: 'alfred_delivery'
 }
