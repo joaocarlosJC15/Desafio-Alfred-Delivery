@@ -1,7 +1,7 @@
 import { HttpRequest } from '@/presentation/protocols'
 import { GetCategoryByUserController } from './get-category-by-user-controller'
 import { CategoryModel } from '@/domain/models/category'
-import { convertErrorToHttpResponse, ok } from '@/presentation/http/responses'
+import { convertErrorToHttpResponse, ok, noContent } from '@/presentation/http/responses'
 import { GetCategoryByUser } from '@/domain/usecases/category/get/protocols/get-category-by-user'
 
 interface SutTypes {
@@ -65,6 +65,17 @@ describe('GetCategoryByUserController', () => {
     const httpResponse = await sut.handle(makeFakeRequest())
 
     expect(httpResponse).toEqual(convertErrorToHttpResponse(new Error()))
+  })
+
+  test('CreateCategoryController deve retornar 204 se getCategoryByUser.getByUser não retornar nenhuma categoria', async () => {
+    const { sut, getCategoryByUserStub } = makeSut()
+
+    jest.spyOn(getCategoryByUserStub, 'getByUser').mockReturnValueOnce(
+      new Promise(resolve => resolve(null))
+    )
+    const httpResponse = await sut.handle(makeFakeRequest())
+
+    expect(httpResponse).toEqual(noContent())
   })
 
   test('CreateCategoryController deve retornar 200 se getCategoryByUser.getByUser for bem sucedido', async () => {
