@@ -5,14 +5,14 @@
 ### Via docker:
  - Necessário ter instalado o docker.
  - No diretório raiz do projeto, execute:
- > npm run up - iniciar o servidor na porta 3333 em modo debug na porta 9222
+ > npm run up - inicia o servidor na porta 3333 com o modo debug ativado na porta 9222
 
 ### Convencional:
  - Necessário ter instalado a versão 13 do NodeJs.
  - No diretório raiz do projeto, execute:
  > npm build - para compilar o projeto para Javascript
  > npm start - iniciar o servidor na porta 3333 - ou:
- > npm run debug - para iniciar o servidor na porta 3333 em modo debug na porta 9222
+ > npm run debug - para iniciar o servidor na porta 3333 com o modo ativado debug na porta 9222
 
 
 -------------------------------------------------------------------------------------
