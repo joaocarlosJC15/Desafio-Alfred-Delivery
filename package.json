@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node dist/main/server.js",
     "build": "rimraf dist && tsc -p tsconfig-build.json",
-    "debug": "nodemon -L --watch ./dist --inspect=0.0.0:9222 --nolazy dist/main/server.js",
+    "debug": "node --inspect=0.0.0:9222 --nolazy dist/main/server.js",
+    "debug-nodemon": "nodemon -L --watch ./dist --inspect=0.0.0:9222 --nolazy dist/main/server.js",
     "test": "jest --silent --noStackTrace --runInBand",
     "test:verbose": "jest --runInBand",
     "test:unit": "npm test -- --watch -c jest-unit-config.js",
@@ -41,7 +42,7 @@
     "husky": "^4.2.5",
     "jest": "^26.4.2",
     "lint-staged": "^10.3.0",
-    "module-alias": "^2.2.2",
+    "nodemon": "^2.0.4",
     "rimraf": "^3.0.2",
     "sqlite3": "^5.0.0",
     "supertest": "^4.0.2",
@@ -54,7 +55,7 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.21.5",
-    "nodemon": "^2.0.4",
+    "module-alias": "^2.2.2",
     "pg": "^8.3.3"
   },
   "engines": {
