@@ -20,7 +20,7 @@ const makeFakeCategory = (): CategoryModel => ({
 
 const makeGetCategoryByUserRepository = (): GetCategoryByUserRepository => {
   class GetCategoryByUserRepositoryStub implements GetCategoryByUserRepository {
-    async getByUser (user_id: number): Promise<CategoryModel> {
+    async getByUser (category_id: number, user_id: number): Promise<CategoryModel> {
       return new Promise(resolve => resolve(makeFakeCategory()))
     }
   }
