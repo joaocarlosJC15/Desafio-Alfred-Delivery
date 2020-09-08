@@ -11,9 +11,13 @@ export class GetUserByTokenUseCase implements GetUserByToken {
   ) {}
 
   async getByToken (token: string): Promise<UserModel> {
-    const result = await this.decrypter.decrypt(token)
+    try {
+      const result = await this.decrypter.decrypt(token)
 
-    if (!result) {
+      if (!result) {
+        throw new UnauthorizedError()
+      }
+    } catch {
       throw new UnauthorizedError()
     }
 
