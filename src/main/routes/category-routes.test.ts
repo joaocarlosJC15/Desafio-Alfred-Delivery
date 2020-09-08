@@ -93,15 +93,15 @@ describe('User Routes', () => {
       expect(response.body.length).toBe(2)
     })
 
-    test('GET /categories deve retornar status 200 para o caso de sucesso', async () => {
+    test('GET /categories deve retornar status 200 para o caso não seja encontrada nenhuma categoria', async () => {
       await request(app)
         .get('/categories')
         .set('access-token', token)
         .send(makeFakeRequest())
-        .expect(200)
+        .expect(204)
     })
 
-    test('POST /categories deve retornar status 401 para quando for fornecido um token invalido', async () => {
+    test('GET /categories deve retornar status 401 para quando for fornecido um token invalido', async () => {
       await request(app)
         .get('/categories')
         .set('access-token', 'abcde')
@@ -109,9 +109,49 @@ describe('User Routes', () => {
         .expect(401)
     })
 
-    test('POST /categories deve retornar status 401 para quando não for fornecido um token', async () => {
+    test('GET /categories deve retornar status 401 para quando não for fornecido um token', async () => {
       await request(app)
         .get('/categories')
+        .send(makeFakeRequest())
+        .expect(401)
+    })
+  })
+
+  describe('GET /categories/:category_id', () => {
+    test('GET /categories/:category_id deve retornar uma categoria para o caso de sucesso', async () => {
+      const category = makeFakeCreateCategory()
+      category.user_id = user_id
+
+      const categoryInserted = await connection('categories').insert(category)
+      const category_id = categoryInserted[0]
+
+      const response = await request(app)
+        .get(`/categories/${category_id}`)
+        .set('access-token', token)
+        .send(makeFakeRequest())
+
+      expect(response.body.id).toEqual(category_id)
+    })
+
+    test('GET /categories/:category_id deve retornar status 204 para o caso não seja encontrado uma categoria para o id passado', async () => {
+      await request(app)
+        .get(`/categories/${1}`)
+        .set('access-token', token)
+        .send(makeFakeRequest())
+        .expect(204)
+    })
+
+    test('GET /categories/:category_id deve retornar status 401 para quando for fornecido um token invalido', async () => {
+      await request(app)
+        .get(`/categories/${1}`)
+        .set('access-token', 'abcde')
+        .send(makeFakeRequest())
+        .expect(401)
+    })
+
+    test('GET /categories/:category_id deve retornar status 401 para quando não for fornecido um token', async () => {
+      await request(app)
+        .get(`/categories/${1}`)
         .send(makeFakeRequest())
         .expect(401)
     })
