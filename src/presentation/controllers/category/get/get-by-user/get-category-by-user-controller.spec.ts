@@ -55,7 +55,7 @@ describe('GetCategoryByUserController', () => {
     expect(getCategoryByUserSpy).toHaveBeenCalledWith(makeFakeRequest().params.category_id, makeFakeRequest().user_id)
   })
 
-  test('CreateCategoryController deve retornar 500 se getCategoryByUser.getAllByUser lançar uma exceção', async () => {
+  test('GetCategoryByUserController deve retornar 500 se getCategoryByUser.getAllByUser lançar uma exceção', async () => {
     const { sut, getCategoryByUserStub } = makeSut()
 
     jest.spyOn(getCategoryByUserStub, 'getByUser').mockReturnValueOnce(
@@ -67,7 +67,7 @@ describe('GetCategoryByUserController', () => {
     expect(httpResponse).toEqual(convertErrorToHttpResponse(new Error()))
   })
 
-  test('CreateCategoryController deve retornar 204 se getCategoryByUser.getByUser não retornar nenhuma categoria', async () => {
+  test('GetCategoryByUserController deve retornar 204 se getCategoryByUser.getByUser não retornar nenhuma categoria', async () => {
     const { sut, getCategoryByUserStub } = makeSut()
 
     jest.spyOn(getCategoryByUserStub, 'getByUser').mockReturnValueOnce(
@@ -78,7 +78,7 @@ describe('GetCategoryByUserController', () => {
     expect(httpResponse).toEqual(noContent())
   })
 
-  test('CreateCategoryController deve retornar 200 se getCategoryByUser.getByUser for bem sucedido', async () => {
+  test('GetCategoryByUserController deve retornar 200 se getCategoryByUser.getByUser for bem sucedido', async () => {
     const { sut } = makeSut()
 
     const httpResponse = await sut.handle(makeFakeRequest())

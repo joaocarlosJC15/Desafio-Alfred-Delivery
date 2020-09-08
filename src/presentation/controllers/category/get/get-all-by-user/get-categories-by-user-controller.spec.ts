@@ -1,7 +1,7 @@
 import { HttpRequest } from '@/presentation/protocols'
 import { GetCategoriesByUserController } from './get-categories-by-user-controller'
 import { CategoryModel } from '@/domain/models/category'
-import { convertErrorToHttpResponse, ok } from '@/presentation/http/responses'
+import { convertErrorToHttpResponse, ok, noContent } from '@/presentation/http/responses'
 import { GetCategoriesByUser } from '@/domain/usecases/category/get/protocols/get-categories-by-user'
 
 interface SutTypes {
@@ -61,7 +61,7 @@ describe('GetCategoriesByUserController', () => {
     expect(getCategoriesByUserSpy).toHaveBeenCalledWith(makeFakeRequest().user_id)
   })
 
-  test('CreateCategoryController deve retornar 500 se getCategoriesByUser.getAllByUser lançar uma exceção', async () => {
+  test('GetCategoriesByUserController deve retornar 500 se getCategoriesByUser.getAllByUser lançar uma exceção', async () => {
     const { sut, getCategoriesByUserStub } = makeSut()
 
     jest.spyOn(getCategoriesByUserStub, 'getAllByUser').mockReturnValueOnce(
@@ -73,7 +73,18 @@ describe('GetCategoriesByUserController', () => {
     expect(httpResponse).toEqual(convertErrorToHttpResponse(new Error()))
   })
 
-  test('CreateCategoryController deve retornar 200 se getCategoriesByUser.getAllByUser for bem sucedido', async () => {
+  test('GetCategoriesByUserController deve retornar 204 se getCategoryByUser.getByUser não retornar nenhuma categoria', async () => {
+    const { sut, getCategoriesByUserStub } = makeSut()
+
+    jest.spyOn(getCategoriesByUserStub, 'getAllByUser').mockReturnValueOnce(
+      new Promise(resolve => resolve(null))
+    )
+    const httpResponse = await sut.handle(makeFakeRequest())
+
+    expect(httpResponse).toEqual(noContent())
+  })
+
+  test('GetCategoriesByUserController deve retornar 200 se getCategoriesByUser.getAllByUser for bem sucedido', async () => {
     const { sut } = makeSut()
 
     const httpResponse = await sut.handle(makeFakeRequest())

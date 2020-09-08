@@ -1,6 +1,6 @@
 import { Controller, HttpRequest, HttpResponse } from '@/presentation/protocols'
 import { GetCategoriesByUser } from '@/domain/usecases/category/get/protocols/get-categories-by-user'
-import { convertErrorToHttpResponse, ok } from '@/presentation/http/responses'
+import { convertErrorToHttpResponse, ok, noContent } from '@/presentation/http/responses'
 
 export class GetCategoriesByUserController implements Controller {
   constructor (
@@ -13,7 +13,7 @@ export class GetCategoriesByUserController implements Controller {
 
       const categories = await this.getCategoriesByUser.getAllByUser(user_id)
 
-      return ok(categories)
+      return categories ? ok(categories) : noContent()
     } catch (error) {
       return convertErrorToHttpResponse(error)
     }
