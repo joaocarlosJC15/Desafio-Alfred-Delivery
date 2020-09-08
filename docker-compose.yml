@@ -15,7 +15,9 @@ services:
     image: node:13
     working_dir: /usr/src/api
     restart: always
-    command: bash -c "npm install --only=prod && npm run debug"
+    command: bash -c "npm install --only=prod && npm run knex-docker:migrate:latest && npm run debug"
+    environment:
+      DB_HOST: postgres-container
     volumes:
       - ./dist/:/usr/src/api/dist
       - ./package.json:/usr/src/api/package.json
