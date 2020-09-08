@@ -6,7 +6,7 @@ export const databaseSQLInfo = {
   database: 'alfred_delivery'
 }
 
-export const applicationPort = 3335
+export const applicationPort = 3333
 
 export const salt = 12
 
