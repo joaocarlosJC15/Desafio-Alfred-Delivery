@@ -20,7 +20,7 @@
 
  > npm start - iniciar o servidor na porta 3333 - ou:
 
- > npm run debug - para iniciar o servidor na porta 3333 com o modo ativado debug na porta 9222.
+ > npm run debug - para iniciar o servidor na porta 3333 com o modo debug ativado na porta 9222.
 
 
 -------------------------------------------------------------------------------------
@@ -40,11 +40,20 @@
 - A API executa no endereço http://localhost:3333
 
 ## Rotas 
-> POST /login - autenticação de usuários
 
-> POST /users - cadastro de usuários
+- Autenticação
+  > POST /login - autenticação de usuários
 
-> POST /categories - cadastro de categorias de gastos financeiros
+- Usuarios
+  > POST /users - cadastro de usuários
+
+- Categorias
+  > POST /categories - cadastro de categorias de gastos financeiros.
+  > GET /categories - listagem de categorias de gastos financeiros por usuário.
+  > GET /categories/:category_id - seleção de uma categoria de gastos financeiros por usuário.
+  > PUT /categories/:category_id - edição de categoria de gastos financeiros por usuário.
+
+
 
 
 
