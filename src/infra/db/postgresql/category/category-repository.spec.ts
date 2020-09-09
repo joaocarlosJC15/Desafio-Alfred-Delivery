@@ -3,6 +3,7 @@ import { CategoryRepository } from './category-repository'
 import connection from '../config/connection'
 import { CreateCategoryModel } from '@/domain/usecases/category/create/protocols/create-category'
 import { CreateUserModel } from '@/domain/usecases/user/create/protocols/create-user'
+import { EditCategoryModel } from '@/domain/usecases/category/edit/protocols/edit-category'
 
 const tableName = 'categories'
 
@@ -19,6 +20,13 @@ const makeFakeCreateCategory = (): CreateCategoryModel => ({
   description: 'email@mail.com',
   disabled: false,
   user_id: 0
+})
+
+const makeFakeEditCategory = (): EditCategoryModel => ({
+  id: 0,
+  name: 'edit_name',
+  description: 'edit_email@mail.com',
+  disabled: false
 })
 
 describe('CategoryRepository', () => {
@@ -127,8 +135,8 @@ describe('CategoryRepository', () => {
     })
   })
 
-  describe('getAllUser()', () => {
-    test('CategoryRepository.getAllUser deve retornar todas as categorias de um usuario se a acao for bem sucedida', async () => {
+  describe('getAllByUser()', () => {
+    test('CategoryRepository.getAllByUser deve retornar todas as categorias de um usuario se a acao for bem sucedida', async () => {
       const sut = makeSut()
 
       let user = await connection('users').insert(makeFakeCreateUser())
@@ -160,6 +168,69 @@ describe('CategoryRepository', () => {
       })
 
       const error = sut.getAllByUser(0)
+
+      await expect(error).rejects.toThrow()
+    })
+  })
+
+  describe('edit()', () => {
+    test('CategoryRepository.edit nao deve retornar nada para o caso de sucesso', async () => {
+      const sut = makeSut()
+
+      const user = await connection('users').insert(makeFakeCreateUser())
+      const user_id = user[0]
+
+      const fakeCreateCategory = Object.assign({}, makeFakeCreateCategory())
+      fakeCreateCategory.user_id = user_id
+
+      const categoryResponse = await connection(tableName).insert(fakeCreateCategory)
+      const category_id = categoryResponse[0]
+
+      const fakeEditCategory = makeFakeEditCategory()
+      fakeEditCategory.id = category_id
+
+      const response = await sut.edit(fakeEditCategory)
+
+      expect(response).toBeUndefined()
+    })
+
+    test('CategoryRepository.edit deve alterar os campos do registro no banco de dados', async () => {
+      const sut = makeSut()
+
+      const user = await connection('users').insert(makeFakeCreateUser())
+      const user_id = user[0]
+
+      const fakeCreateCategory = Object.assign({}, makeFakeCreateCategory())
+      fakeCreateCategory.user_id = user_id
+
+      const categoryResponse = await connection(tableName).insert(fakeCreateCategory)
+      const category_id = categoryResponse[0]
+
+      const fakeEditCategory = makeFakeEditCategory()
+      fakeEditCategory.id = category_id
+
+      await sut.edit(fakeEditCategory)
+
+      const fakeEditCategoryWithUserId = Object.assign({ user_id: user_id }, fakeEditCategory)
+
+      const editedCategory = await connection()
+        .select()
+        .from(tableName)
+        .where(`${tableName}.id`, category_id)
+
+      editedCategory[0].disabled = Boolean(editedCategory[0].disabled)
+
+      expect(editedCategory[0]).toEqual(fakeEditCategoryWithUserId)
+    })
+
+    test('CategoryRepository.edit deve retornar uma excecao caso uma excecao seja gerada', async () => {
+      const sut = makeSut()
+
+      jest.spyOn(sut, 'edit').mockImplementationOnce(async () => {
+        return new Promise((resolve, reject) => reject(new Error()))
+      })
+
+      const error = sut.edit(makeFakeEditCategory())
 
       await expect(error).rejects.toThrow()
     })
