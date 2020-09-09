@@ -1,12 +1,15 @@
+import connection from '../config/connection'
+
 import { CreateCategoryRepository } from '@/domain/protocols/db/category/create-category-repository'
 import { CreateCategoryModel } from '@/domain/usecases/category/create/protocols/create-category'
 import { CategoryModel } from '@/domain/models/category'
-import connection from '../config/connection'
 import { serializeToCategory } from './category-serialize'
 import { GetCategoryByUserRepository } from '@/domain/protocols/db/category/get-category-by-user-repository'
 import { GetCategoriesByUserRepository } from '@/domain/protocols/db/category/get-categories-by-user-repository'
+import { EditCategoryRepository } from '@/domain/protocols/db/category/edit-category-repository'
+import { EditCategoryModel } from '@/domain/usecases/category/edit/protocols/edit-category'
 
-export class CategoryRepository implements CreateCategoryRepository, GetCategoryByUserRepository, GetCategoriesByUserRepository {
+export class CategoryRepository implements CreateCategoryRepository, GetCategoryByUserRepository, GetCategoriesByUserRepository, EditCategoryRepository {
   tableName = 'categories'
 
   async create (categoryCreate: CreateCategoryModel): Promise<CategoryModel> {
@@ -56,5 +59,15 @@ export class CategoryRepository implements CreateCategoryRepository, GetCategory
     }
 
     return null
+  }
+
+  async edit (category: EditCategoryModel): Promise<void> {
+    const fieldsEdit = {
+      name: category.name,
+      description: category.description,
+      disabled: category.disabled
+    }
+
+    await connection(this.tableName).update(fieldsEdit).where(`${this.tableName}.id`, category.id)
   }
 }
