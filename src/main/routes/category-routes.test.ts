@@ -191,6 +191,30 @@ describe('User Routes', () => {
         .expect(200)
     })
 
+    test('PUT /categories/:category_id deve garantir que os campos passados sejam alterados no registro', async () => {
+      const category = makeFakeCreateCategory()
+      category.user_id = user_id
+
+      const categoryInserted = await connection(tableName).insert(category)
+      const category_id = categoryInserted[0]
+
+      await request(app)
+        .put(`/categories/${category_id}`)
+        .set('access-token', token)
+        .send(makeFakeRequestToEditCategory())
+
+      const categoryEdited = await connection()
+        .select()
+        .from(tableName)
+        .where(`${tableName}.id`, category_id)
+
+      categoryEdited[0].disabled = Boolean(categoryEdited[0].disabled)
+
+      const fakeCategoryEdited = Object.assign({ id: category_id, user_id }, makeFakeRequestToEditCategory())
+
+      expect(categoryEdited[0]).toEqual(fakeCategoryEdited)
+    })
+
     test('PUT /categories/:category_id deve retornar 204 para o caso seja passado o id de uma categoria inexistente', async () => {
       const category = makeFakeCreateCategory()
       category.user_id = user_id
