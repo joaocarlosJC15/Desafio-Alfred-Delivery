@@ -1,9 +1,10 @@
 export interface EditCategoryModel {
+  id: number
   name?: string
   description?: string
   disabled?: boolean
 }
 
 export interface EditCategory {
-  edit: (category: EditCategoryModel) => Promise<void>
+  edit: (user_id: number, category: EditCategoryModel) => Promise<boolean>
 }
