@@ -1,5 +1,5 @@
 export const databaseSQLInfo = {
-  host: '127.0.0.1',
+  host: process.env.DB_HOST ? process.env.DB_HOST : '127.0.0.1',
   user: 'postgres',
   port: 5432,
   password: 'postgres',

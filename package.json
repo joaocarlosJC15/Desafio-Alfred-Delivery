@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node dist/main/server.js",
     "build": "rimraf dist && tsc -p tsconfig-build.json",
+    "build-docker": "tsc -p tsconfig-build.json",
     "debug": "node --inspect=0.0.0:9222 dist/main/server.js",
     "debug-nodemon": "nodemon -L --watch ./dist --inspect=0.0.0:9222 --nolazy dist/main/server.js",
     "test": "jest --silent --noStackTrace --runInBand",
@@ -14,10 +15,12 @@
     "test:integration": "npm test -- --watch -c jest-integration-config.js",
     "test:staged": "npm test -- --findRelatedTests",
     "test:ci": "npm test -- --coverage",
+    "test:coveralls": "npm run test:ci && coveralls < coverage/lcov.info",
     "knex:migrate:latest": "knex migrate:latest --knexfile src/infra/db/postgresql/config/knexfile.ts",
     "knex:migrate:rollback": "knex migrate:rollback --knexfile src/infra/db/postgresql/config/knexfile.ts",
     "knex:migrate:make": "knex migrate:make --knexfile src/infra/db/postgresql/config/knexfile.ts -x ts",
-    "up": "npm run build && docker-compose up",
+    "knex-docker:migrate:latest": "knex migrate:latest --knexfile ./dist/infra/db/postgresql/config/knexfile.js",
+    "up": "docker-compose up",
     "down": "docker-compose down"
   },
   "repository": {
@@ -34,6 +37,7 @@
     "@types/jest": "^26.0.13",
     "@types/node": "^14.6.4",
     "@typescript-eslint/eslint-plugin": "^3.10.1",
+    "coveralls": "^3.1.0",
     "eslint": "^7.8.1",
     "eslint-config-standard-with-typescript": "^11.0.0",
     "eslint-plugin-import": "^2.22.0",
