@@ -49,10 +49,12 @@
 
 - Categorias
   > POST /categories - cadastro de categorias de gastos financeiros.
-  > GET /categories - listagem de categorias de gastos financeiros por usuário.
-  > GET /categories/:category_id - seleção de uma categoria de gastos financeiros por usuário.
-  > PUT /categories/:category_id - edição de categoria de gastos financeiros por usuário.
 
+  > GET /categories - listagem de categorias de gastos financeiros por usuário.
+
+  > GET /categories/:category_id - seleção de uma categoria de gastos financeiros por usuário.
+
+  > PUT /categories/:category_id - edição de categoria de gastos financeiros por usuário.
 
 
 
