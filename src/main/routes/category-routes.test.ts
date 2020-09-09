@@ -142,6 +142,26 @@ describe('User Routes', () => {
         .expect(204)
     })
 
+    test('GET /categories/:category_id deve retornar status 204 case seja passado um id d euma categoria que pertence a outro usuario ', async () => {
+      const category = makeFakeCreateCategory()
+      category.user_id = user_id
+
+      const categoryInserted = await connection('categories').insert(category)
+      const category_id = categoryInserted[0]
+
+      const user = await connection('users').insert(makeFakeCreateUser())
+      const user_id_2 = user[0]
+
+      const token = sign({ user_id_2 }, jwtSecret)
+
+      await connection('users').update({ token }).where('users.id', user_id_2)
+
+      await request(app)
+        .get(`/categories/${category_id}`)
+        .set('access-token', token)
+        .expect(204)
+    })
+
     test('GET /categories/:category_id deve retornar status 401 para quando for fornecido um token invalido', async () => {
       await request(app)
         .get(`/categories/${1}`)
@@ -171,7 +191,7 @@ describe('User Routes', () => {
         .expect(200)
     })
 
-    test('PUT /categories/:category_id deve retornar 204 para o caso seja passada o id de uma categoria inexistente', async () => {
+    test('PUT /categories/:category_id deve retornar 204 para o caso seja passado o id de uma categoria inexistente', async () => {
       const category = makeFakeCreateCategory()
       category.user_id = user_id
 
@@ -184,7 +204,7 @@ describe('User Routes', () => {
         .expect(204)
     })
 
-    test('PUT /categories/:category_id deve retornar 204 para o caso seja passada o id de uma categoria que pertence a outro usuario', async () => {
+    test('PUT /categories/:category_id deve retornar 204 para o caso seja passado o id de uma categoria que pertence a outro usuario', async () => {
       const category = makeFakeCreateCategory()
       category.user_id = user_id
 
