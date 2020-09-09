@@ -6,7 +6,7 @@ const makeSut = (): IntegerFieldValidation => {
 }
 
 describe('IntegerFieldValidation', () => {
-  test('RequiredFieldValidation.validate não deve retornar nada se a validação for bem sucedida', () => {
+  test('IntegerFieldValidation.validate não deve retornar nada se a validação for bem sucedida', () => {
     const sut = makeSut()
     const error = sut.validate({ field: 2 })
     expect(error).toBeUndefined()
