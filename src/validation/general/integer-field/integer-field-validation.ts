@@ -8,10 +8,10 @@ export class IntegerFieldValidation implements Validation {
   ) {}
 
   validate (input: any): Error {
-    if (!Number.isInteger(input[this.fieldName])) {
+    if (input[this.fieldName] !== 0 && input[this.fieldName] && !Number.isInteger(input[this.fieldName])) {
       return new InvalidParamError(this.fieldName)
     }
-    if (this.numberOfDigits) {
+    if (input[this.fieldName] && this.numberOfDigits) {
       const element = input[this.fieldName].toString()
       if (element.length > this.numberOfDigits) {
         return new InvalidParamError(this.fieldName)

@@ -8,10 +8,10 @@ export class StringFieldValidation implements Validation {
   ) {}
 
   validate (input: any): Error {
-    if (typeof input[this.fieldName] !== 'string') {
+    if (input[this.fieldName] && typeof input[this.fieldName] !== 'string') {
       return new InvalidParamError(this.fieldName)
     }
-    if (this.length) {
+    if (input[this.fieldName] && this.length) {
       if (input[this.fieldName].length > this.length) {
         return new InvalidParamError(this.fieldName)
       }

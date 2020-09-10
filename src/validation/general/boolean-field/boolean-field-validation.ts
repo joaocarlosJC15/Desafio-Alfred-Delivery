@@ -7,7 +7,7 @@ export class BooleanFieldValidation implements Validation {
   }
 
   validate (input: any): Error {
-    if (typeof input[this.fieldName] !== 'boolean') {
+    if (input[this.fieldName] !== null && input[this.fieldName] !== undefined && typeof input[this.fieldName] !== 'boolean') {
       return new InvalidParamError(this.fieldName)
     }
   }
