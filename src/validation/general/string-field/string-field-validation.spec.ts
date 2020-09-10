@@ -12,6 +12,18 @@ describe('StringFieldValidation', () => {
     expect(error).toBeUndefined()
   })
 
+  test('StringieldValidation.validate não deve retornar nada se a propriedade a ser testada for null', () => {
+    const sut = makeSut()
+    const error = sut.validate({ field: null })
+    expect(error).toBeUndefined()
+  })
+
+  test('StringieldValidation.validate não deve retornar nada se a propriedade a ser testada for undefined', () => {
+    const sut = makeSut()
+    const error = sut.validate({})
+    expect(error).toBeUndefined()
+  })
+
   test('StringFieldValidation.validate deve retonar o erro "InvalidParamError" se a propriedade a ser testada for uma string maior que o permitido', () => {
     const sut = makeSut(5)
     const error = sut.validate({ field: 'abcdef' })
@@ -33,12 +45,6 @@ describe('StringFieldValidation', () => {
   test('StringFieldValidation.validate deve retonar o erro "InvalidParamError" se a propriedade a ser testada for um booleano', () => {
     const sut = makeSut()
     const error = sut.validate({ field: true })
-    expect(error).toEqual(new InvalidParamError('field'))
-  })
-
-  test('StringFieldValidation.validate deve retonar o erro "InvalidParamError" se a propriedade a ser testada for um undefined', () => {
-    const sut = makeSut()
-    const error = sut.validate({})
     expect(error).toEqual(new InvalidParamError('field'))
   })
 })
