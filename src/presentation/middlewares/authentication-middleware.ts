@@ -1,7 +1,7 @@
 
 import { UnauthorizedError } from '@/errors'
 import { Middleware, HttpResponse, HttpRequest } from '../protocols'
-import { GetUserByToken } from '@/domain/usecases/user/get-by-token/protocols/get-user-by-token'
+import { GetUserByToken } from '@/domain/usecases/user/get/get-by-token/protocols/get-user-by-token'
 import { convertErrorToHttpResponse, ok } from '../http/responses'
 
 export class AuthenticationMiddleware implements Middleware {

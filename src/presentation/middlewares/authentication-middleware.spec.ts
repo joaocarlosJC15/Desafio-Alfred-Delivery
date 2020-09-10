@@ -3,7 +3,7 @@ import { UserModel } from '@/domain/models/user'
 import { HttpRequest } from '../protocols'
 import { convertErrorToHttpResponse, ok } from '../http/responses'
 import { UnauthorizedError } from '@/errors'
-import { GetUserByToken } from '@/domain/usecases/user/get-by-token/protocols/get-user-by-token'
+import { GetUserByToken } from '@/domain/usecases/user/get/get-by-token/protocols/get-user-by-token'
 
 interface SutTypes {
   sut: AuthenticationMiddleware
