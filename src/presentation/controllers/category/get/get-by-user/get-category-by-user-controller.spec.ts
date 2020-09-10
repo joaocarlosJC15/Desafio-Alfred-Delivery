@@ -1,12 +1,14 @@
-import { HttpRequest } from '@/presentation/protocols'
+import { HttpRequest, Validation } from '@/presentation/protocols'
 import { GetCategoryByUserController } from './get-category-by-user-controller'
 import { CategoryModel } from '@/domain/models/category'
 import { convertErrorToHttpResponse, ok, noContent } from '@/presentation/http/responses'
 import { GetCategoryByUser } from '@/domain/usecases/category/get/protocols/get-category-by-user'
+import { InvalidParamError } from '@/errors'
 
 interface SutTypes {
   sut: GetCategoryByUserController
   getCategoryByUserStub: GetCategoryByUser
+  validationStub: Validation
 }
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -34,17 +36,54 @@ const makeGetCategoryByUser = (): GetCategoryByUser => {
   return new GetCategoryByUserStub()
 }
 
+const makeValidation = (): Validation => {
+  class ValidationStub implements Validation {
+    validate (input: any): Error {
+      return null
+    }
+  }
+
+  return new ValidationStub()
+}
+
 const makeSut = (): SutTypes => {
   const getCategoryByUserStub = makeGetCategoryByUser()
-  const sut = new GetCategoryByUserController(getCategoryByUserStub)
+  const validationStub = makeValidation()
+  const sut = new GetCategoryByUserController(getCategoryByUserStub, validationStub)
 
   return {
     sut,
-    getCategoryByUserStub
+    getCategoryByUserStub,
+    validationStub
   }
 }
 
 describe('GetCategoryByUserController', () => {
+  test('GetCategoryByUserController.validation.validate deve ser chamado com os valores corretos', async () => {
+    const { sut, validationStub } = makeSut()
+
+    const validateSpy = jest.spyOn(validationStub, 'validate')
+
+    await sut.handle(makeFakeRequest())
+
+    const copyParams = Object.assign({}, makeFakeRequest().params)
+    copyParams.category_id = Number(copyParams.category_id)
+
+    const element = Object.assign(copyParams, makeFakeRequest().body)
+
+    expect(validateSpy).toHaveBeenCalledWith(element)
+  })
+
+  test('GetCategoryByUserController deve retornar 400 se alguma validação retornar o erro "InvalidParamError"', async () => {
+    const { sut, validationStub } = makeSut()
+
+    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new InvalidParamError('field'))
+
+    const httpResponse = await sut.handle(makeFakeRequest())
+
+    expect(httpResponse).toEqual(convertErrorToHttpResponse(new InvalidParamError('field')))
+  })
+
   test('GetCategoryByUserController.getCategoryByUser.getByUser deve ser chamado com os valores corretos', async () => {
     const { sut, getCategoryByUserStub } = makeSut()
 
