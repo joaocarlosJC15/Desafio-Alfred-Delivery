@@ -3,7 +3,7 @@ import { Authentication, AuthenticationModel } from '@/domain/usecases/user/auth
 import { Validation, HttpRequest } from '@/presentation/protocols'
 import { UnauthorizedError } from '@/errors/unauthorized-error'
 import { ok, convertErrorToHttpResponse } from '@/presentation/http/responses'
-import { MissingParamError } from '@/errors'
+import { MissingParamError, InvalidParamError } from '@/errors'
 
 const token = 'any_token'
 
@@ -116,5 +116,15 @@ describe('Login Controller', () => {
     const httpResponse = await sut.handle(makeFakeRequest())
 
     expect(httpResponse).toEqual(convertErrorToHttpResponse(new MissingParamError('field')))
+  })
+
+  test('AuthenticationUserController deve retornar 400 se alguma validação retornar o erro "InvalidParamError"', async () => {
+    const { sut, validationStub } = makeSut()
+
+    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new InvalidParamError('field'))
+
+    const httpResponse = await sut.handle(makeFakeRequest())
+
+    expect(httpResponse).toEqual(convertErrorToHttpResponse(new InvalidParamError('field')))
   })
 })
