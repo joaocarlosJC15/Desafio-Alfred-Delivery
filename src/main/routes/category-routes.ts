@@ -4,7 +4,7 @@ import { makeAuthenticationMiddleware } from '../factories/middlewares/authentic
 import { adaptRoute } from '../adapters/express-route-adapter'
 import { makeCreateCategoryController } from '../factories/controllers/category/create/create-category-controller-factory'
 import { makeGetCategoriesByUserController } from '../factories/controllers/category/get/get-categories-by-user-controller-factory'
-import { makeGetCategoryByUserController } from '../factories/controllers/category/get/get-category-by-user-controller-factory'
+import { makeGetCategoryByUserController } from '../factories/controllers/category/get/oneByUser/get-category-by-user-controller-factory'
 import { makeEditCategoryController } from '../factories/controllers/category/edit/edit-category-controller-factory'
 
 export default (router: Router): void => {
