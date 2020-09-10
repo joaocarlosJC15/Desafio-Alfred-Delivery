@@ -1,7 +1,9 @@
 import request from 'supertest'
 import { hash } from 'bcrypt'
+import { sign } from 'jsonwebtoken'
 
 import app from '../config/app'
+import { jwtSecret } from '../config/env'
 import connection from '@/infra/db/postgresql/config/connection'
 import { CreateUserModel } from '@/domain/usecases/user/create/protocols/create-user'
 
@@ -87,6 +89,67 @@ describe('User Routes', () => {
           email: makeFakeCreateUser().email,
           password: 'wrong_password'
         })
+        .expect(401)
+    })
+  })
+
+  describe('GET /users:user_id', () => {
+    test('GET /users:user_id deve retornar um usuario para o caso de sucesso', async () => {
+      const user = await connection(tableName).insert(makeFakeCreateUser())
+      const user_id = user[0]
+
+      const token = sign({ user_id }, jwtSecret)
+
+      await connection('users').update({ token }).where('users.id', user_id)
+
+      const response = await request(app)
+        .get(`/users/${user_id}`)
+        .set('access-token', token)
+
+      expect(response.body.id).toEqual(user_id)
+    })
+
+    test('GET /users:user_id deve retornar status 200 para o caso de sucesso', async () => {
+      const user = await connection(tableName).insert(makeFakeCreateUser())
+      const user_id = user[0]
+
+      const token = sign({ user_id }, jwtSecret)
+
+      await connection('users').update({ token }).where('users.id', user_id)
+
+      await request(app)
+        .get(`/users/${user_id}`)
+        .set('access-token', token)
+        .expect(200)
+    })
+
+    test('GET /users:user_id deve retornar status 204 caso nao seja encontrado um usuario para o id passado ', async () => {
+      const user = await connection(tableName).insert(makeFakeCreateUser())
+      const user_id = user[0]
+
+      const token = sign({ user_id }, jwtSecret)
+
+      await connection('users').update({ token }).where('users.id', user_id)
+
+      const user2 = await connection(tableName).insert(makeFakeCreateUser())
+      const user_id2 = user2[0]
+
+      await request(app)
+        .get(`/users/${user_id2}`)
+        .set('access-token', token)
+        .expect(204)
+    })
+
+    test('GET /users:user_id deve retornar status 401 para quando for fornecido um token invalido', async () => {
+      await request(app)
+        .get(`/users/${1}`)
+        .set('access-token', 'abcde')
+        .expect(401)
+    })
+
+    test('GET /users:user_id deve retornar status 401 para quando não for fornecido um token', async () => {
+      await request(app)
+        .get(`/users/${1}`)
         .expect(401)
     })
   })
