@@ -1,5 +1,5 @@
-import { UserModel } from '@/domain/models/user'
+import { EditUserModel } from '@/domain/usecases/user/edit/protocols/edit-user'
 
 export interface EditUserRepository {
-  edit: (user: UserModel) => Promise<UserModel>
+  edit: (user_id: number, user: EditUserModel) => Promise<void>
 }

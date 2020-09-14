@@ -9,6 +9,7 @@ import { GetUsersRepository } from '@/domain/protocols/db/user/get-users-reposit
 import { EditUserRepository } from '@/domain/protocols/db/user/edit-user-repository'
 import { UpdateJwtTokenRepository } from '@/domain/protocols/db/user/update-jwt-token-repository'
 import { GetUserByTokenRepository } from '@/domain/protocols/db/user/get-user-by-token-repository'
+import { EditUserModel } from '@/domain/usecases/user/edit/protocols/edit-user'
 
 export class UserRepository implements CreateUserRepository, GetUserByEmailRepository, GetUserByIdRepository, GetUsersRepository, EditUserRepository, UpdateJwtTokenRepository, GetUserByTokenRepository {
   tableName = 'users'
@@ -63,25 +64,16 @@ export class UserRepository implements CreateUserRepository, GetUserByEmailRepos
     }
   }
 
-  async edit (user: UserModel): Promise<UserModel> {
-    const editUser = {
-      name: user.name,
-      email: user.email,
-      birthDate: user.birthDate,
-      password: user.password
-    }
+  async edit (user_id: number, user: EditUserModel): Promise<void> {
+    const fieldsEdit: any = {}
 
-    const data = await connection(this.tableName).update(editUser).where('users.id', user.id)
-
-    if (data) {
-      const userData = await connection.select().from(this.tableName).where('users.id', user.id)
-
-      if (userData) {
-        return serializeToUser(userData[0])
+    for (const field in user) {
+      if (user[field]) {
+        fieldsEdit[field] = user[field]
       }
     }
 
-    return null
+    await connection(this.tableName).update(fieldsEdit).where('users.id', user_id)
   }
 
   async updateJwtToken (id: number, token: string): Promise<void> {
