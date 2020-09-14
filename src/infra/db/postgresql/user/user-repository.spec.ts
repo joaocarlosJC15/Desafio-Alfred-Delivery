@@ -3,6 +3,7 @@ import { UserRepository } from './user-repository'
 import connection from '../config/connection'
 import { CreateUserModel } from '@/domain/usecases/user/create/protocols/create-user'
 import { UserModel } from '@/domain/models/user'
+import { EditUserModel } from '@/domain/usecases/user/edit/protocols/edit-user'
 
 const tableName = 'users'
 const fakeDate = new Date(1998, 2, 11)
@@ -156,27 +157,69 @@ describe('UserRepository', () => {
   })
 
   describe('edit()', () => {
-    test('UserRepository.edit deve retornar um usuario se a acao for bem sucedida', async () => {
+    test('UserRepository.edit não deve retornar nada se a acao for bem sucedida', async () => {
       const sut = makeSut()
 
       const data = await connection(tableName).insert(makeFakeCreateUser())
 
-      const editUser: UserModel = {
-        id: data[0],
+      const editUser: EditUserModel = {
         name: 'name_edit',
         email: makeFakeCreateUser().email,
         birthDate: makeFakeCreateUser().birthDate,
         password: makeFakeCreateUser().password
       }
 
-      const user = await sut.edit(editUser)
+      const response = await sut.edit(data[0], editUser)
 
-      expect(user).toBeTruthy()
-      expect(user.id).toBeTruthy()
-      expect(user.name).toBe('name_edit')
-      expect(user.email).toBe(makeFakeCreateUser().email)
-      expect(user.birthDate).toBeTruthy()
-      expect(user.password).toBe(makeFakeCreateUser().password)
+      expect(response).toBeUndefined()
+    })
+
+    test('UserRepository.edit deve atualizar somente os campos name e email do usuario no banco de dados', async () => {
+      const sut = makeSut()
+
+      const data = await connection(tableName).insert(makeFakeCreateUser())
+
+      const editUser: EditUserModel = {
+        name: 'name_edit',
+        email: '123@mail.com',
+        birthDate: null,
+        password: null
+      }
+
+      await sut.edit(data[0], editUser)
+
+      const result = await connection.select().from(tableName).where('users.id', data[0])
+
+      expect(result).toBeTruthy()
+      expect(result[0].id).toBeTruthy()
+      expect(result[0].name).toBe(editUser.name)
+      expect(result[0].email).toBe(editUser.email)
+      expect(result[0].birthDate).toBeTruthy()
+      expect(result[0].password).toBe(makeFakeCreateUser().password)
+    })
+
+    test('UserRepository.edit deve atualizar somente o campo senha do usuario no banco de dados', async () => {
+      const sut = makeSut()
+
+      const data = await connection(tableName).insert(makeFakeCreateUser())
+
+      const editUser: EditUserModel = {
+        name: '',
+        email: '',
+        birthDate: null,
+        password: '123'
+      }
+
+      await sut.edit(data[0], editUser)
+
+      const result = await connection.select().from(tableName).where('users.id', data[0])
+
+      expect(result).toBeTruthy()
+      expect(result[0].id).toBeTruthy()
+      expect(result[0].name).toBe(makeFakeCreateUser().name)
+      expect(result[0].email).toBe(makeFakeCreateUser().email)
+      expect(result[0].birthDate).toBeTruthy()
+      expect(result[0].password).toBe(editUser.password)
     })
 
     test('UserRepository.edit deve retornar uma excecao caso uma excecao seja gerada', async () => {
@@ -194,7 +237,7 @@ describe('UserRepository', () => {
         return new Promise((resolve, reject) => reject(new Error()))
       })
 
-      const error = sut.edit(editUser)
+      const error = sut.edit(1, editUser)
 
       await expect(error).rejects.toThrow()
     })
