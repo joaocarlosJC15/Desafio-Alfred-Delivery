@@ -81,7 +81,7 @@ describe('EditCategoryUsecase', () => {
     await expect(error).rejects.toEqual(new Error())
   })
 
-  test('EditCategoryUseCase.editCategoryRepository.edit não deve retornar true se for bem sucedido', async () => {
+  test('EditCategoryUseCase.editCategoryRepository.edit deve retornar true se for bem sucedido', async () => {
     const { sut } = makeSut()
 
     const response = await sut.edit(fakeUserId, makeFakeEditCategoryModel())
