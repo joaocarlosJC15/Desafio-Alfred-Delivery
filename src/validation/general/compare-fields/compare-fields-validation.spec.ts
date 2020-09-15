@@ -15,6 +15,15 @@ describe('CompareFieldsValidation', () => {
     expect(error).toEqual(new InvalidParamError('fieldToCompare'))
   })
 
+  test('CompareFieldsValidation.validate não deve retornar nada se o primeiro campo a ser comparado for null', () => {
+    const sut = makeSut()
+    const error = sut.validate({
+      field: null,
+      fieldToCompare: 'any'
+    })
+    expect(error).toBeFalsy()
+  })
+
   test('CompareFieldsValidation.validate não deve retornar nada se a validação for bem sucedida', () => {
     const sut = makeSut()
     const error = sut.validate({
