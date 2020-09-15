@@ -3,7 +3,7 @@ import { EditUserController } from '@/presentation/controllers/user/edit/edit-us
 import { makeEditUserControllerValidation } from './edit-user-controller-validation-factory'
 import { makeEditUserUsecase } from '@/main/factories/usecases/user/edit/edit-user-usecase-factory'
 
-export const makeCreateUserController = (): Controller => {
+export const makeEditUserController = (): Controller => {
   const controller = new EditUserController(
     makeEditUserUsecase(),
     makeEditUserControllerValidation()
