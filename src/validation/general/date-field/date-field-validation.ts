@@ -13,7 +13,7 @@ export class DateFieldValidation implements Validation {
       if (date.toString() !== 'Invalid Date') {
         return
       }
+      return new InvalidParamError(this.fieldName)
     }
-    return new InvalidParamError(this.fieldName)
   }
 }
