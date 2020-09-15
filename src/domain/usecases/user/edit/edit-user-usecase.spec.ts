@@ -228,7 +228,7 @@ describe('EditUserUseCase', () => {
 
     await sut.edit(fakeUserId, makeFakeEditUserModel(), fakePassWord)
 
-    expect(compareSpy).toHaveBeenCalledWith(makeFakeUser().password, fakePassWord)
+    expect(compareSpy).toHaveBeenCalledWith(fakePassWord, makeFakeUser().password)
   })
 
   test('EditUserUseCase.hashComparer.compare não deve ser chamado se não for fornecido um password', async () => {
