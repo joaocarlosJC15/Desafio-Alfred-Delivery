@@ -6,6 +6,7 @@ import { HashComparer } from '@/domain/protocols/criptography/hash/hash-comparer
 import { EditUserModel } from './protocols/edit-user'
 import { UserModel } from '@/domain/models/user'
 import { UnauthorizedError, ParamInUseError } from '@/errors'
+import { HashGenerate } from '@/domain/protocols/criptography/hash/hash-generate'
 
 interface SutTypes {
   sut: EditUserUseCase
@@ -13,11 +14,15 @@ interface SutTypes {
   getUserByIdRepositoryStub: GetUserByIdRepository
   getUserByEmailRepositoryStub: GetUserByEmailRepository
   hashComparerStub: HashComparer
+  hashGenerateStub: HashGenerate
 }
 
 const fakeDate = new Date()
 const fakeUserId = -1
+
 const fakePassWord = 'password'
+const hashPassword = 'hash'
+
 const makeFakeEditUserModel = (): EditUserModel => ({
   name: 'name_edit',
   email: 'email_edit',
@@ -73,17 +78,29 @@ const makeHashComparer = (): HashComparer => {
   return new HashComparerStub()
 }
 
+const makeHashGenerate = (): HashGenerate => {
+  class HashGenerateStub implements HashGenerate {
+    async generate (value: string): Promise<string> {
+      return new Promise(resolve => resolve(hashPassword))
+    }
+  }
+
+  return new HashGenerateStub()
+}
+
 const makeSut = (): SutTypes => {
   const editUserRepositoryStub = makeFakeEditUserRepository()
   const getUserByIdRepositoryStub = makeGetUserByIdRepository()
   const getUserByEmailRepositoryStub = makeGetUserByEmailRepository()
   const hashComparerStub = makeHashComparer()
+  const hashGenerateStub = makeHashGenerate()
 
   const sut = new EditUserUseCase(
     editUserRepositoryStub,
     getUserByIdRepositoryStub,
     getUserByEmailRepositoryStub,
-    hashComparerStub
+    hashComparerStub,
+    hashGenerateStub
   )
 
   return {
@@ -91,7 +108,8 @@ const makeSut = (): SutTypes => {
     editUserRepositoryStub,
     getUserByEmailRepositoryStub,
     getUserByIdRepositoryStub,
-    hashComparerStub
+    hashComparerStub,
+    hashGenerateStub
   }
 }
 
@@ -103,7 +121,10 @@ describe('EditUserUseCase', () => {
 
     await sut.edit(fakeUserId, makeFakeEditUserModel())
 
-    expect(editSpy).toHaveBeenCalledWith(fakeUserId, makeFakeEditUserModel())
+    const userEdit = makeFakeEditUserModel()
+    userEdit.password = hashPassword
+
+    expect(editSpy).toHaveBeenCalledWith(fakeUserId, userEdit)
   })
 
   test('EditUserUseCase deve retornar uma excecao se editUserRepository.edit gerar uma excecao', async () => {
@@ -245,6 +266,26 @@ describe('EditUserUseCase', () => {
     const error = sut.edit(fakeUserId, makeFakeEditUserModel(), fakePassWord)
 
     await expect(error).rejects.toEqual(new UnauthorizedError())
+  })
+
+  test('CreateUserUsecase.hashGenerate.generate deve ser chamado com o campo password', async () => {
+    const { sut, hashGenerateStub } = makeSut()
+
+    const hashSpy = jest.spyOn(hashGenerateStub, 'generate')
+
+    await sut.edit(fakeUserId, makeFakeEditUserModel(), fakePassWord)
+
+    expect(hashSpy).toHaveBeenCalledWith(makeFakeEditUserModel().password)
+  })
+
+  test('CreateUserUsecase deve retornar uma excecao caso HashGenerate.generate gere uma excecao', async () => {
+    const { sut, hashGenerateStub } = makeSut()
+
+    jest.spyOn(hashGenerateStub, 'generate').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+
+    const error = sut.edit(fakeUserId, makeFakeEditUserModel(), fakePassWord)
+
+    await expect(error).rejects.toEqual(new Error())
   })
 
   test('EditUserUseCase.edit deve retornar true se for bem sucedido', async () => {
