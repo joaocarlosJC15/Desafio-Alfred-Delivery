@@ -17,7 +17,7 @@ const makeFakeCreateUser = (): CreateUserModel => ({
 
 const makeFakeCreateCategory = (): CreateCategoryModel => ({
   name: 'name',
-  description: 'email@mail.com',
+  description: 'description',
   disabled: false,
   user_id: 0
 })
