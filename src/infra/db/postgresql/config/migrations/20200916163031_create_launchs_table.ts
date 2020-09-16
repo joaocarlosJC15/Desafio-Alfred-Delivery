@@ -8,7 +8,7 @@ export async function up (knex: Knex): Promise<void> {
     table.decimal('input', 10, 2).notNullable()
     table.decimal('output', 10, 2).notNullable()
     table.decimal('balance', 10, 2).notNullable()
-    table.specificType('date', 'timestamptz')
+    table.specificType('date', 'timestamptz').notNullable()
     table.boolean('disabled').notNullable()
     table.integer('category_id').references('id').inTable('categories').notNullable()
   })
