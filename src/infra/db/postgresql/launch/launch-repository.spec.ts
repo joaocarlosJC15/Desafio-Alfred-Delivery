@@ -94,4 +94,81 @@ describe('LaunchRepository', () => {
       await expect(error).rejects.toThrow()
     })
   })
+
+  describe('getLastLaunchByUser()', () => {
+    test('LaunchRepository.getLastLaunchByUser deve retornar o ultimo lançamento de um usuario se a ação for bem sucedida', async () => {
+      const sut = makeSut()
+
+      const user = await connection('users').insert(makeFakeCreateUser())
+      const user_id = user[0]
+
+      const fakeCategory = Object.assign({}, makeFakeCreateCategory())
+      fakeCategory.user_id = user_id
+
+      const category = await connection('categories').insert(fakeCategory)
+      const category_id = category[0]
+
+      const fakeLaunch = Object.assign({}, makeFakeCreateLaunch())
+      fakeLaunch.category_id = category_id
+
+      await connection(tableName).insert(fakeLaunch)
+      fakeLaunch.description = 'description2'
+      await connection(tableName).insert(fakeLaunch)
+
+      const user2 = await connection('users').insert(makeFakeCreateUser())
+      const user_id2 = user2[0]
+
+      fakeCategory.user_id = user_id2
+
+      const category2 = await connection('categories').insert(fakeCategory)
+      const category2_id = category2[0]
+
+      fakeLaunch.category_id = category2_id
+      fakeLaunch.description = 'description3'
+      await connection(tableName).insert(fakeLaunch)
+
+      const launch = await sut.getLastLaunchByUser(user_id)
+
+      expect(launch).toBeTruthy()
+      expect(launch.category.user_id).toBe(user_id)
+      expect(launch.description).toBe('description2')
+    })
+
+    test('LaunchRepository.getLastLaunchByUser deve retornar null se nao for encontrado nenhum lançamento para o usuário', async () => {
+      const sut = makeSut()
+
+      const user = await connection('users').insert(makeFakeCreateUser())
+      const user_id = user[0]
+
+      const fakeCategory = Object.assign({}, makeFakeCreateCategory())
+      fakeCategory.user_id = user_id
+
+      const category = await connection('categories').insert(fakeCategory)
+      const category_id = category[0]
+
+      const fakeLaunch = Object.assign({}, makeFakeCreateLaunch())
+      fakeLaunch.category_id = category_id
+
+      await connection(tableName).insert(fakeLaunch)
+
+      const user2 = await connection('users').insert(makeFakeCreateUser())
+      const user_id2 = user2[0]
+
+      const launch = await sut.getLastLaunchByUser(user_id2)
+
+      expect(launch).toBeNull()
+    })
+
+    test('LaunchRepository.getLastLaunchByUser deve retornar uma excecao caso uma excecao seja gerada', async () => {
+      const sut = makeSut()
+
+      jest.spyOn(sut, 'getLastLaunchByUser').mockImplementationOnce(async () => {
+        return new Promise((resolve, reject) => reject(new Error()))
+      })
+
+      const error = sut.getLastLaunchByUser(0)
+
+      await expect(error).rejects.toThrow()
+    })
+  })
 })
