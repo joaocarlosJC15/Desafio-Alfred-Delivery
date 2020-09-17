@@ -25,7 +25,7 @@ export class EditUserUseCase implements EditUser {
     }
     if (userEdit.password) {
       const getUser = await this.getUserByIdRepository.getById(user_id)
-      console.log(password)
+
       const isValid = await this.hashComparer.compare(password, getUser.password)
       if (!isValid) {
         throw new UnauthorizedError()
